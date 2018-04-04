@@ -1,43 +1,35 @@
-//*****************************************************************
-// ÎÄ¼şÃû :						HOGDetector.cpp
-// °æ±¾	 :						1.0
-// Ä¿µÄ¼°Ö÷Òª¹¦ÄÜ :				ÓÃÓÚCHOGÌØÕ÷¼ÆËã¼°Í¼ÏñÆ¥Åä
-// ´´½¨ÈÕÆÚ :					2016.1.28
-// ĞŞ¸ÄÈÕÆÚ :					
-// ×÷Õß :						ÍõÕ÷
-// ĞŞ¸ÄÕß :						
-// ÁªÏµ·½Ê½ :					fiki@seu.edu.cn
+ï»¿//*****************************************************************
+// æ–‡ä»¶å :						HOGDetector.cpp
+// ç‰ˆæœ¬	 :						1.0
+// ç›®çš„åŠä¸»è¦åŠŸèƒ½ :				ç”¨äºCHOGç‰¹å¾è®¡ç®—åŠå›¾åƒåŒ¹é…
+// åˆ›å»ºæ—¥æœŸ :					2016.1.28
+// ä¿®æ”¹æ—¥æœŸ :					
+// ä½œè€… :						ç‹å¾
+// ä¿®æ”¹è€… :						
+// è”ç³»æ–¹å¼ :					fiki@seu.edu.cn
 //*****************************************************************/
-
 ///////////////////////////////////////////////////////
 ////////////////////////include////////////////////////
 ///////////////////////////////////////////////////////
 #include "StdAfx.h"
 #include "RHOG.h"
-#include "Markup.h"		//ÓÃÓÚÊä³öxmlÎÄ¼ş
+#include "Markup.h"		//ç”¨äºè¾“å‡ºxmlæ–‡ä»¶
 #include "time.h"
-
 #include <windows.h> 
 /*****************************************************************
 Defines
 *****************************************************************/
 //none
-
-
 /*****************************************************************
 Global Variables
 *****************************************************************/
 int g_nPosImageNumber = 1;
 int g_nNegImageNumber = 1;
-
-
 /*****************************************************************
 Global Function
 *****************************************************************/
-
-
 /*****************************************************************
-							RHOGÀà¶¨Òå
+							RHOGç±»å®šä¹‰
 *****************************************************************/ 
 /*****************************************************************
 Name:			RHOG
@@ -45,72 +37,55 @@ Inputs:
 	none.
 Return Value:
 	none.
-Description:	Ä¬ÈÏ¹¹Ôìº¯Êı
+Description:	é»˜è®¤æ„é€ å‡½æ•°
 *****************************************************************/
 RHOG::RHOG(void)
 {
-	//³õÊ¼»¯²ÎÊı
-	m_nANG = ANG;				//·Ö¶àÉÙ¸ö½Ç¶È·½Ïò£¬±ØĞëÊÇÅ¼Êı
-
-	m_nCellNumb = CellNumb;		//Ã¿¸ö½Ç¶È·½Ïò·Ö¶àÉÙ¸öcell
-
-	m_nCellPerBlob = CellPerBlob;		//Ã¿Èı¸öcellÒ»¸öblob
-
-	m_nBlobNumb = m_nCellNumb - m_nCellPerBlob;		//Ã¿¸ö½Ç¶È·½Ïò¶àÉÙ¸öm_nBlobNumb
-
-	m_nBIN = 10;				//Ã¿¸öcell·Ö¶àÉÙ¸öÌİ¶È·½Ïò
-
-	m_nImageWidth = ImageWidth;	//Í¼Ïñ´óĞ¡
-
-	m_nSearchStep = SearchStep;	//ËÑË÷²½³¤
-
-	m_nClassType = SVMC;		//·ÖÀàÆ÷
-
-	m_bSym = Sym;				//ÊÇ·ñĞèÒª¶Ô³ÆÌØÕ÷
-	m_bRSC = RSC;				//ÊÇ·ñ¶ÔCell½øĞĞ½Ç¶È¼äµÄÆ½»¬
-	m_bDSC = DSC;				//ÊÇ·ñ¶ÔCell½øĞĞ½Ç¶È¼äµÄÆ½»¬
-
-	m_nFilterSize = FilterSize;	//Ä¬ÈÏÖĞÖµÂË²¨Æ÷Ä£°å´óĞ¡
-
-	m_nMatchTime = MatchTime;	//¼ÆËã½á¹ûÊ±Ä£°åÖØµşµÄ´ÎÊı
-
-	m_bSavePosPatch = false;	//ÊÇ·ñ±£Áô¼ì²âÖĞËù½ØÈ¡µÄÕıÀı×ÓÍ¼
-	m_bSaveNegPatch = false;	//ÊÇ·ñ±£Áô¼ì²âÖĞËù½ØÈ¡µÄ·´Àı×ÓÍ¼
-
-	m_sPosPatchPath = "E:\\Train\\Pos\\";	//¼ì²âÖĞËù½ØÈ¡µÄÕıÀı×ÓÍ¼±£´æÂ·¾¶
-	m_sNegPatchPath = "E:\\Train\\Neg\\";	//¼ì²âÖĞËù½ØÈ¡µÄÕıÀı×ÓÍ¼±£´æÂ·¾¶
-
-
-	//³õÊ¼»¯¿Õ¼äÖ¸Õë¼°Ïà¹Ø²ÎÊı
-	m_pfFeature = NULL;			//ÌØÕ÷ÏòÁ¿
-	m_pCellFeatures = NULL;		//CellÌØÕ÷ÏòÁ¿
-
-	m_pClassifier=NULL;			//·ÖÀàÆ÷³õÊ¼»¯Îª¿Õ
-
+	//åˆå§‹åŒ–å‚æ•°
+	m_nANG = ANG;				//åˆ†å¤šå°‘ä¸ªè§’åº¦æ–¹å‘ï¼Œå¿…é¡»æ˜¯å¶æ•°
+	m_nCellNumb = CellNumb;		//æ¯ä¸ªè§’åº¦æ–¹å‘åˆ†å¤šå°‘ä¸ªcell
+	m_nCellPerBlob = CellPerBlob;		//æ¯ä¸‰ä¸ªcellä¸€ä¸ªblob
+	m_nBlobNumb = m_nCellNumb - m_nCellPerBlob;		//æ¯ä¸ªè§’åº¦æ–¹å‘å¤šå°‘ä¸ªm_nBlobNumb
+	m_nBIN = 10;				//æ¯ä¸ªcellåˆ†å¤šå°‘ä¸ªæ¢¯åº¦æ–¹å‘
+	m_nImageWidth = ImageWidth;	//å›¾åƒå¤§å°
+	m_nSearchStep = SearchStep;	//æœç´¢æ­¥é•¿
+	m_nClassType = SVMC;		//åˆ†ç±»å™¨
+	m_bSym = Sym;				//æ˜¯å¦éœ€è¦å¯¹ç§°ç‰¹å¾
+	m_bRSC = RSC;				//æ˜¯å¦å¯¹Cellè¿›è¡Œè§’åº¦é—´çš„å¹³æ»‘
+	m_bDSC = DSC;				//æ˜¯å¦å¯¹Cellè¿›è¡Œè§’åº¦é—´çš„å¹³æ»‘
+	m_nFilterSize = FilterSize;	//é»˜è®¤ä¸­å€¼æ»¤æ³¢å™¨æ¨¡æ¿å¤§å°
+	m_nMatchTime = MatchTime;	//è®¡ç®—ç»“æœæ—¶æ¨¡æ¿é‡å çš„æ¬¡æ•°
+	m_bSavePosPatch = false;	//æ˜¯å¦ä¿ç•™æ£€æµ‹ä¸­æ‰€æˆªå–çš„æ­£ä¾‹å­å›¾
+	m_bSaveNegPatch = false;	//æ˜¯å¦ä¿ç•™æ£€æµ‹ä¸­æ‰€æˆªå–çš„åä¾‹å­å›¾
+	m_sPosPatchPath = "E:\\Train\\Pos\\";	//æ£€æµ‹ä¸­æ‰€æˆªå–çš„æ­£ä¾‹å­å›¾ä¿å­˜è·¯å¾„
+	m_sNegPatchPath = "E:\\Train\\Neg\\";	//æ£€æµ‹ä¸­æ‰€æˆªå–çš„æ­£ä¾‹å­å›¾ä¿å­˜è·¯å¾„
+	//åˆå§‹åŒ–ç©ºé—´æŒ‡é’ˆåŠç›¸å…³å‚æ•°
+	m_pfFeature = NULL;			//ç‰¹å¾å‘é‡
+	m_pCellFeatures = NULL;		//Cellç‰¹å¾å‘é‡
+	m_pClassifier=NULL;			//åˆ†ç±»å™¨åˆå§‹åŒ–ä¸ºç©º
 	if ( m_bSym )
 	{
-		m_nFeatureNumber = m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN + m_nANG / 2 * m_nCellNumb;		//ÌØÕ÷×ÜÊı
+		m_nFeatureNumber = m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN + m_nANG / 2 * m_nCellNumb;		//ç‰¹å¾æ€»æ•°
 	}
 	else
 	{
-		m_nFeatureNumber = m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN;		//ÌØÕ÷×ÜÊı 18*4*3*10
+		m_nFeatureNumber = m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN;		//ç‰¹å¾æ€»æ•° 18*4*3*10
 	}
-
-	m_nANGWidth = m_nBlobNumb * m_nCellPerBlob * m_nBIN;		//Ã¿¸ö·½ÏòµÄÌØÕ÷Êı 4*3*10
-
-
-	//¿ª±Ù³õÊ¼»¯¿Õ¼ä
+	m_nANGWidth = m_nBlobNumb * m_nCellPerBlob * m_nBIN;		//æ¯ä¸ªæ–¹å‘çš„ç‰¹å¾æ•° 4*3*10
+	//å¼€è¾Ÿåˆå§‹åŒ–ç©ºé—´
 	m_fNormalMat = new float[m_nImageWidth * m_nImageWidth];
 	m_fMagMat = new float[m_nImageWidth * m_nImageWidth];
 	m_nANGle = new int[m_nImageWidth * m_nImageWidth];
 	m_nMag=new int[m_nImageWidth * m_nImageWidth];
-
-	//Ô¤ÉèÄ£°å²ÎÊı
+	mask=new int[m_nImageWidth*m_nImageWidth];
+	histo_mask=new int [m_nImageWidth*m_nImageWidth];
+	//é¢„è®¾æ¨¡æ¿å‚æ•°
 	float t_fCenterX;
-	t_fCenterX = m_nImageWidth / 2.0f;		//¼ÆËãÖĞµã×ø±ê
+	t_fCenterX = m_nImageWidth / 2.0f;		//è®¡ç®—ä¸­ç‚¹åæ ‡
 	float t_fCenterY;
 	t_fCenterY = m_nImageWidth / 2.0f;
 	int i, j;
+	
 	for ( j = 0; j < m_nImageWidth; ++j )
 	{
 		for ( i = 0; i < m_nImageWidth; ++i )
@@ -119,62 +94,70 @@ RHOG::RHOG(void)
 			float t_fDeltaY;
 			t_fDeltaX = i - t_fCenterX;
 			t_fDeltaY = t_fCenterY - j;
-
-			m_fNormalMat[j * m_nImageWidth + i] = atan2( 0, 1.0f );	
-
-
+			//m_fNormalMat[j * m_nImageWidth + i] = atan2( 0, 1.0f );	
 			m_fNormalMat[j * m_nImageWidth + i] = atan2( ( t_fDeltaY ), ( t_fDeltaX ) );		// + PI2;
 			m_fMagMat[j * m_nImageWidth + i] = sqrt( t_fDeltaX * t_fDeltaX + t_fDeltaY * t_fDeltaY );
-
 			if ( m_fNormalMat[j * m_nImageWidth + i] < 0 )
 			{
 				m_fNormalMat[j * m_nImageWidth + i] = m_fNormalMat[j * m_nImageWidth + i] + PI2;
 			}
-
+			if(m_fMagMat[j*m_nImageWidth+i]<64)
+				mask[j*m_nImageWidth+i]=1;
+			else
+				mask[j*m_nImageWidth+i]=0;
 			m_nANGle[j * m_nImageWidth + i] = (int)( m_fNormalMat[j * m_nImageWidth + i] * m_nANG / PI2 );
 			m_nMag[j*m_nImageWidth+i]=(int)(m_fMagMat[j*m_nImageWidth+i]/10);
+			histo_mask[j*m_nImageWidth+i]=m_nANGle[j*m_nImageWidth+i]*70+10*m_nMag[j*m_nImageWidth+i];
 		}
 	}
 }//RHOG
-
-
 /*****************************************************************
 Name:			~HOGDetector
 Inputs:
 	none.
 Return Value:
 	none.
-Description:	Îö¹¹º¯Êı
+Description:	ææ„å‡½æ•°
 *****************************************************************/
 RHOG::~RHOG(void)
 {
-	Clear();	//ÊÍ·Å¿Õ¼ä
-
+	Clear();	//é‡Šæ”¾ç©ºé—´
 	if ( m_fNormalMat != NULL )
 	{
 		delete [] m_fNormalMat;
 		m_fNormalMat = NULL;
 	}
-
 	if ( m_fMagMat != NULL )
 	{
 		delete [] m_fMagMat;
 		m_fMagMat = NULL;
 	}
-
 	if ( m_nANGle != NULL )
 	{
 		delete [] m_nANGle;
 		m_nANGle = NULL;
 	}
-
-	//¹Ø±Õ·ÖÀàÆ÷
+	if ( mask != NULL )
+	{
+		delete [] mask;
+		mask = NULL;
+	}
+	if (histo_mask!= NULL )
+	{
+		delete [] histo_mask;
+		histo_mask = NULL;
+	}
+	if ( m_nMag != NULL )
+	{
+		delete [] m_nMag;
+		m_nMag = NULL;
+	}
+	//å…³é—­åˆ†ç±»å™¨
 	if (m_pClassifier!=NULL)
 	{
 		CvBoost *t_Booster;
 		CvRTrees *t_RTrees;
 		CvSVM *t_SVM;
-
 		if ( m_nClassType == Rtree )
 		{
 			t_RTrees=(CvRTrees*)m_pClassifier;
@@ -195,50 +178,39 @@ RHOG::~RHOG(void)
 		}
 	}
 }//~RHOG(void)
-
-
 /*****************************************************************
 Name:			GetPar
 Inputs:
-	RHOGPar &t_Par - ·µ»Ø¶Á³öµÄ²ÎÊı
+	RHOGPar &t_Par - è¿”å›è¯»å‡ºçš„å‚æ•°
 Return Value:
 	none
-Description:	¶Á³öµ±Ç°ÏµÍ³²ÎÊı
+Description:	è¯»å‡ºå½“å‰ç³»ç»Ÿå‚æ•°
 *****************************************************************/
 void RHOG::GetPar( RHOGPar &t_Par )
 {
-	t_Par.m_nANG = m_nANG;		//·Ö¶àÉÙ¸ö½Ç¶È·½Ïò£¬±ØĞëÊÇÅ¼Êı
-
-	t_Par.m_nCellNumb = m_nCellNumb;		//Ã¿¸ö½Ç¶È·½Ïò·Ö¶àÉÙ¸öcell
-
-	t_Par.m_nCellPerBlob = m_nCellPerBlob;	//Ã¿Èı¸öcellÒ»¸öblob
-
-	t_Par.m_nBIN = m_nBIN;		//Ã¿¸öcell·Ö¶àÉÙ¸öÌİ¶È·½Ïò
-
-	t_Par.m_nImageWidth = m_nImageWidth;//Í¼Ïñ´óĞ¡
-
-	t_Par.m_nClassType = m_nClassType;	//·ÖÀàÆ÷
-
-	t_Par.m_bSym = m_bSym;		//ÊÇ·ñĞèÒª¶Ô³ÆÌØÕ÷
-	t_Par.m_bRSC = m_bRSC;		//ÊÇ·ñ¶ÔCell½øĞĞ½Ç¶È¼äµÄÆ½»¬
-	t_Par.m_bDSC = m_bDSC;		//ÊÇ·ñ¶ÔCell½øĞĞ½Ç¶È¼äµÄÆ½»¬
-
-	t_Par.m_nFilterSize = m_nFilterSize;	//Í¼ÏñÔ¤´¦ÀíÖĞÖµÂË²¨Æ÷Ä£°å´óĞ¡£¬±ØĞëÊÇÆæÊı
+	t_Par.m_nANG = m_nANG;		//åˆ†å¤šå°‘ä¸ªè§’åº¦æ–¹å‘ï¼Œå¿…é¡»æ˜¯å¶æ•°
+	t_Par.m_nCellNumb = m_nCellNumb;		//æ¯ä¸ªè§’åº¦æ–¹å‘åˆ†å¤šå°‘ä¸ªcell
+	t_Par.m_nCellPerBlob = m_nCellPerBlob;	//æ¯ä¸‰ä¸ªcellä¸€ä¸ªblob
+	t_Par.m_nBIN = m_nBIN;		//æ¯ä¸ªcellåˆ†å¤šå°‘ä¸ªæ¢¯åº¦æ–¹å‘
+	t_Par.m_nImageWidth = m_nImageWidth;//å›¾åƒå¤§å°
+	t_Par.m_nClassType = m_nClassType;	//åˆ†ç±»å™¨
+	t_Par.m_bSym = m_bSym;		//æ˜¯å¦éœ€è¦å¯¹ç§°ç‰¹å¾
+	t_Par.m_bRSC = m_bRSC;		//æ˜¯å¦å¯¹Cellè¿›è¡Œè§’åº¦é—´çš„å¹³æ»‘
+	t_Par.m_bDSC = m_bDSC;		//æ˜¯å¦å¯¹Cellè¿›è¡Œè§’åº¦é—´çš„å¹³æ»‘
+	t_Par.m_nFilterSize = m_nFilterSize;	//å›¾åƒé¢„å¤„ç†ä¸­å€¼æ»¤æ³¢å™¨æ¨¡æ¿å¤§å°ï¼Œå¿…é¡»æ˜¯å¥‡æ•°
 }//GetPar
-
-
 /*****************************************************************
 Name:			SetPar
 Inputs:
-	RHOGPar t_Par - ´ıÉèÖÃµÄ·ÖÎö²ÎÊı
+	RHOGPar t_Par - å¾…è®¾ç½®çš„åˆ†æå‚æ•°
 Return Value:
-	1 - ±£´æ³É¹¦
-	<0 - ±£´æ´íÎó
-Description:	ÉèÖÃ²ÎÊı£¬Çå¿Õµ±Ç°¿ª±Ù¿Õ¼ä£¬²¢¸ù¾İ²ÎÊı¿ª±Ù¿Õ¼ä
+	1 - ä¿å­˜æˆåŠŸ
+	<0 - ä¿å­˜é”™è¯¯
+Description:	è®¾ç½®å‚æ•°ï¼Œæ¸…ç©ºå½“å‰å¼€è¾Ÿç©ºé—´ï¼Œå¹¶æ ¹æ®å‚æ•°å¼€è¾Ÿç©ºé—´
 *****************************************************************/
 int RHOG::SetPar( RHOGPar t_Par )
 {
-	//ÅĞ¶ÏºÏ·¨ĞÔ
+	//åˆ¤æ–­åˆæ³•æ€§
 	if ( t_Par.m_nANG < 4 
 		|| t_Par.m_nCellNumb < 5
 		|| t_Par.m_nCellNumb > 20
@@ -254,57 +226,56 @@ int RHOG::SetPar( RHOGPar t_Par )
 	{
 		return ParIllegal;
 	}
-
-	//¸´ÖÆ²ÎÊı
-	m_nANG = t_Par.m_nANG;		//·Ö¶àÉÙ¸ö½Ç¶È·½Ïò£¬±ØĞëÊÇÅ¼Êı
-
-	m_nCellNumb = t_Par.m_nCellNumb;		//Ã¿¸ö½Ç¶È·½Ïò·Ö¶àÉÙ¸öcell
-
-	m_nCellPerBlob = t_Par.m_nCellPerBlob;	//Ã¿Èı¸öcellÒ»¸öblob
-
-	m_nBlobNumb = m_nCellNumb - m_nCellPerBlob;		//Ã¿¸ö½Ç¶È·½Ïò¶àÉÙ¸öm_nBlobNumb
-
-	m_nBIN = t_Par.m_nBIN;		//Ã¿¸öcell·Ö¶àÉÙ¸öÌİ¶È·½Ïò
-
-	m_nImageWidth = t_Par.m_nImageWidth;//Í¼Ïñ´óĞ¡
-
-	m_nClassType = t_Par.m_nClassType;	//·ÖÀàÆ÷
-
-	m_bSym = t_Par.m_bSym;		//ÊÇ·ñĞèÒª¶Ô³ÆÌØÕ÷
-	m_bRSC = t_Par.m_bRSC;		//ÊÇ·ñ¶ÔCell½øĞĞ½Ç¶È¼äµÄÆ½»¬
-	m_bDSC = t_Par.m_bDSC;		//ÊÇ·ñ¶ÔCell½øĞĞ½Ç¶È¼äµÄÆ½»¬
-
-	m_nFilterSize = t_Par.m_nFilterSize;//Í¼ÏñÔ¤´¦ÀíÖĞÖµÂË²¨Æ÷Ä£°å´óĞ¡
-
-
-	//ÇåÀíÏÖÓĞ¿Õ¼ä
+	//å¤åˆ¶å‚æ•°
+	m_nANG = t_Par.m_nANG;		//åˆ†å¤šå°‘ä¸ªè§’åº¦æ–¹å‘ï¼Œå¿…é¡»æ˜¯å¶æ•°
+	m_nCellNumb = t_Par.m_nCellNumb;		//æ¯ä¸ªè§’åº¦æ–¹å‘åˆ†å¤šå°‘ä¸ªcell
+	m_nCellPerBlob = t_Par.m_nCellPerBlob;	//æ¯ä¸‰ä¸ªcellä¸€ä¸ªblob
+	m_nBlobNumb = m_nCellNumb - m_nCellPerBlob;		//æ¯ä¸ªè§’åº¦æ–¹å‘å¤šå°‘ä¸ªm_nBlobNumb
+	m_nBIN = t_Par.m_nBIN;		//æ¯ä¸ªcellåˆ†å¤šå°‘ä¸ªæ¢¯åº¦æ–¹å‘
+	m_nImageWidth = t_Par.m_nImageWidth;//å›¾åƒå¤§å°
+	m_nClassType = t_Par.m_nClassType;	//åˆ†ç±»å™¨
+	m_bSym = t_Par.m_bSym;		//æ˜¯å¦éœ€è¦å¯¹ç§°ç‰¹å¾
+	m_bRSC = t_Par.m_bRSC;		//æ˜¯å¦å¯¹Cellè¿›è¡Œè§’åº¦é—´çš„å¹³æ»‘
+	m_bDSC = t_Par.m_bDSC;		//æ˜¯å¦å¯¹Cellè¿›è¡Œè§’åº¦é—´çš„å¹³æ»‘
+	m_nFilterSize = t_Par.m_nFilterSize;//å›¾åƒé¢„å¤„ç†ä¸­å€¼æ»¤æ³¢å™¨æ¨¡æ¿å¤§å°
+	//æ¸…ç†ç°æœ‰ç©ºé—´
 	Clear();
-
 	if ( m_fNormalMat != NULL )
 	{
 		delete [] m_fNormalMat;
 		m_fNormalMat = NULL;
 	}
-
 	if ( m_fMagMat != NULL )
 	{
 		delete [] m_fMagMat;
 		m_fMagMat = NULL;
 	}
-
 	if ( m_nANGle != NULL )
 	{
 		delete [] m_nANGle;
 		m_nANGle = NULL;
 	}
-
-	//¹Ø±Õ·ÖÀàÆ÷
+	if ( m_nMag != NULL )
+	{
+		delete [] m_nMag;
+		m_nMag = NULL;
+	}
+	if ( mask != NULL )
+	{
+		delete [] mask;
+		mask = NULL;
+	}
+	if ( histo_mask != NULL )
+	{
+		delete [] histo_mask;
+		histo_mask = NULL;
+	}
+	//å…³é—­åˆ†ç±»å™¨
 	if (m_pClassifier!=NULL)
 	{
 		CvBoost *t_Booster;
 		CvRTrees *t_RTrees;
 		CvSVM *t_SVM;
-
 		if ( m_nClassType == Rtree )
 		{
 			t_RTrees=(CvRTrees*)m_pClassifier;
@@ -324,26 +295,26 @@ int RHOG::SetPar( RHOGPar t_Par )
 			m_pClassifier=NULL;
 		}
 	}
-
-	//¿ª±Ù¿Õ¼ä
+	//å¼€è¾Ÿç©ºé—´
 	if ( m_bSym )
 	{
-		m_nFeatureNumber = m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN + m_nANG / 2 * m_nCellNumb;		//ÌØÕ÷×ÜÊı
+		m_nFeatureNumber = m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN + m_nANG / 2 * m_nCellNumb;		//ç‰¹å¾æ€»æ•°
 	}
 	else
 	{
-		m_nFeatureNumber = m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN;		//ÌØÕ÷×ÜÊı
+		m_nFeatureNumber = m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN;		//ç‰¹å¾æ€»æ•°
 	}
-
-	m_nANGWidth = m_nBlobNumb * m_nCellPerBlob * m_nBIN;					//Ã¿¸ö·½ÏòµÄÌØÕ÷Êı
-
+	m_nANGWidth = m_nBlobNumb * m_nCellPerBlob * m_nBIN;					//æ¯ä¸ªæ–¹å‘çš„ç‰¹å¾æ•°
 	m_fNormalMat = new float[m_nImageWidth * m_nImageWidth];	
 	m_fMagMat = new float[m_nImageWidth * m_nImageWidth];
 	m_nANGle = new int[m_nImageWidth * m_nImageWidth];
-
-	//Ô¤ÉèÄ£°å²ÎÊı
+	mask=new int[m_nImageWidth*m_nImageWidth];
+	m_nMag=new int[m_nImageWidth * m_nImageWidth];
+	histo_mask=new int [m_nImageWidth*m_nImageWidth];
+	
+	//é¢„è®¾æ¨¡æ¿å‚æ•°
 	float t_fCenterX;
-	t_fCenterX = m_nImageWidth / 2.0f;		//¼ÆËãÖĞµã×ø±ê
+	t_fCenterX = m_nImageWidth / 2.0f;		//è®¡ç®—ä¸­ç‚¹åæ ‡
 	float t_fCenterY;
 	t_fCenterY = m_nImageWidth / 2.0f;
 	int i, j;
@@ -355,195 +326,159 @@ int RHOG::SetPar( RHOGPar t_Par )
 			float t_fDeltaY;
 			t_fDeltaX = i - t_fCenterX;
 			t_fDeltaY = t_fCenterY - j;
-
 			m_fNormalMat[j * m_nImageWidth + i] = atan2( 0, 1.0f );	
-
-
 			m_fNormalMat[j * m_nImageWidth + i] = atan2( ( t_fDeltaY ), ( t_fDeltaX ) );		// + PI2;
 			m_fMagMat[j * m_nImageWidth + i] = sqrt( t_fDeltaX * t_fDeltaX + t_fDeltaY * t_fDeltaY );
-
 			if ( m_fNormalMat[j * m_nImageWidth + i] < 0 )
 			{
 				m_fNormalMat[j * m_nImageWidth + i] = m_fNormalMat[j * m_nImageWidth + i] + PI2;
 			}
-
+			if(m_fMagMat[j*m_nImageWidth+i]<64)
+				mask[j*m_nImageWidth+i]=1;
+			else
+			{
+				mask[j*m_nImageWidth+i]=0;
+			}
 			m_nANGle[j * m_nImageWidth + i] = (int)( m_fNormalMat[j * m_nImageWidth + i] * m_nANG / PI2 );
+			m_nMag[j*m_nImageWidth+i]=(int)(m_fMagMat[j*m_nImageWidth+i]/10);
+			histo_mask[j*m_nImageWidth+i]=m_nANGle[j*m_nImageWidth+i]*70+10*m_nMag[j*m_nImageWidth+i];
+			
 		}
 	}
-
 	return 1;
 }//SetPar
-
-
 /*****************************************************************
 Name:			SaveClassifier
 Inputs:
-	string t_sClassFilePath - ±£´æµÄ·ÖÀàÆ÷Â·¾¶¼°ÎÄ¼şÃû
+	string t_sClassFilePath - ä¿å­˜çš„åˆ†ç±»å™¨è·¯å¾„åŠæ–‡ä»¶å
 Return Value:
-	1 - ±£´æ³É¹¦
-	<0 - ±£´æ´íÎó
-Description:	±£´æµ±Ç°·ÖÀàÆ÷ÖÁÎÄ¼ş£¬ÎÄ¼şÃûÓ¦ÒÔxml½áÎ²¡£
+	1 - ä¿å­˜æˆåŠŸ
+	<0 - ä¿å­˜é”™è¯¯
+Description:	ä¿å­˜å½“å‰åˆ†ç±»å™¨è‡³æ–‡ä»¶ï¼Œæ–‡ä»¶ååº”ä»¥xmlç»“å°¾ã€‚
 *****************************************************************/
 int RHOG::SaveClassifier( string t_sClassFilePath )
 {
-	//Ğ´Èë·ÖÀàÆ÷
+	//å†™å…¥åˆ†ç±»å™¨
 	if ( m_pClassifier == NULL )
 	{
 		return ClassifierNotExist;
 	}
-
 	switch ( m_nClassType )
 	{
 	case Adaboost:	((CvBoost *)m_pClassifier)->save( t_sClassFilePath.c_str() );break;
 	case Rtree:		((CvRTrees *)m_pClassifier)->save( t_sClassFilePath.c_str() );break;
 	case SVMC:		((CvSVM *)m_pClassifier)->save( t_sClassFilePath.c_str() );break;
 	}
-
 	locale loc = locale::global(locale(""));
 		
 	ifstream ifs( t_sClassFilePath.c_str());
 	if( !ifs )
 	{
-		locale::global(locale("C"));//»¹Ô­È«¾ÖÇøÓòÉè¶¨
-
+		locale::global(locale("C"));//è¿˜åŸå…¨å±€åŒºåŸŸè®¾å®š
 		return ClassifierSaveFailed;
 	}
-
-	//Ğ´Èë²ÎÊıĞÅÏ¢
+	//å†™å…¥å‚æ•°ä¿¡æ¯
 	string t_sKey;
 	string t_sOut;
-
 	CMarkup t_XML;  
 	t_XML.Load( t_sClassFilePath.c_str() );   
-
 	t_XML.AddElem( "ClassifierPar" );
-
 	t_XML.IntoElem();
-
 	t_XML.AddElem( "Par" );
-
-	char p[32]={0,};//³õÊ¼»¯ÁÙÊ±×Ö·û´®
-
+	char p[32]={0,};//åˆå§‹åŒ–ä¸´æ—¶å­—ç¬¦ä¸²
 	t_sKey = "ANG";
 	sprintf( p,"%d", m_nANG );
 	t_sOut = p;
 	t_XML.AddAttrib( t_sKey.c_str(), t_sOut.c_str() );
-
 	t_sKey = "CellNumb";
 	sprintf( p,"%d", m_nCellNumb );
 	t_sOut = p;
 	t_XML.AddAttrib( t_sKey.c_str(), t_sOut.c_str() );
-
 	t_sKey = "CellPerBlob";
 	sprintf( p,"%d", m_nCellPerBlob );
 	t_sOut = p;
 	t_XML.AddAttrib( t_sKey.c_str(), t_sOut.c_str() );
-
 	t_sKey = "BIN";
 	sprintf( p,"%d", m_nBIN );
 	t_sOut = p;
 	t_XML.AddAttrib( t_sKey.c_str(), t_sOut.c_str() );
-
 	t_sKey = "ImageWidth";
 	sprintf( p,"%d", m_nImageWidth );
 	t_sOut = p;
 	t_XML.AddAttrib( t_sKey.c_str(), t_sOut.c_str() );
-
 	t_sKey = "ClassType";
 	sprintf( p,"%d", m_nClassType );
 	t_sOut = p;
 	t_XML.AddAttrib( t_sKey.c_str(), t_sOut.c_str() );
-
 	t_sKey = "Sym";
 	sprintf( p,"%d", m_bSym );
 	t_sOut = p;
 	t_XML.AddAttrib( t_sKey.c_str(), t_sOut.c_str() );
-
 	t_sKey = "RSC";
 	sprintf( p,"%d", m_bRSC );
 	t_sOut = p;
 	t_XML.AddAttrib( t_sKey.c_str(), t_sOut.c_str() );
-
 	t_sKey = "DSC";
 	sprintf( p,"%d", m_bDSC );
 	t_sOut = p;
 	t_XML.AddAttrib( t_sKey.c_str(), t_sOut.c_str() );
-
 	t_sKey = "FilterSize";
 	sprintf( p,"%d", m_nFilterSize );
 	t_sOut = p;
 	t_XML.AddAttrib( t_sKey.c_str(), t_sOut.c_str() );
-
 	t_XML.OutOfElem();
-
 	t_XML.Save( t_sClassFilePath.c_str() );
-
-	locale::global(locale("C"));//»¹Ô­È«¾ÖÇøÓòÉè¶¨
-
+	locale::global(locale("C"));//è¿˜åŸå…¨å±€åŒºåŸŸè®¾å®š
 	return 1;
 }//SaveClassifier
-
-
 /*****************************************************************
 Name:			LoadClassifier
 Inputs:
-	string t_sClassFilePath - ¶ÁÈ¡µÄ·ÖÀàÆ÷Â·¾¶
+	string t_sClassFilePath - è¯»å–çš„åˆ†ç±»å™¨è·¯å¾„
 Return Value:
-	1 - ¶ÁÈ¡³É¹¦
-	<0 - ¶ÁÈ¡´íÎó
-Description:	¶ÁÈ¡µÄ·ÖÀàÆ÷£¬¶ÁÈë²ÎÊıºó£¬»á¸ù¾İ¶ÁÈ¡µÄ
-				·ÖÀàÆ÷²ÎÊı£¬ÖØĞÂ¿ª±Ù¿Õ¼ä
+	1 - è¯»å–æˆåŠŸ
+	<0 - è¯»å–é”™è¯¯
+Description:	è¯»å–çš„åˆ†ç±»å™¨ï¼Œè¯»å…¥å‚æ•°åï¼Œä¼šæ ¹æ®è¯»å–çš„
+				åˆ†ç±»å™¨å‚æ•°ï¼Œé‡æ–°å¼€è¾Ÿç©ºé—´
 *****************************************************************/
 int RHOG::LoadClassifier( string t_sClassFilePath )
 {
 	locale loc = locale::global(locale(""));
-
 	ifstream ifs( t_sClassFilePath.c_str() );
 	if( !ifs )
 	{
-		locale::global(locale("C"));//»¹Ô­È«¾ÖÇøÓòÉè¶¨
+		locale::global(locale("C"));//è¿˜åŸå…¨å±€åŒºåŸŸè®¾å®š
 		return ClassifierSaveFailed;
 	}
-
-	//¶ÁÈ¡XMLĞÅÏ¢
+	//è¯»å–XMLä¿¡æ¯
 	RHOGPar t_RHOGPar;
 	{
 		bool t_bFind;
 		CMarkup t_XML;  
 		t_bFind = t_XML.Load( t_sClassFilePath );  
-
 		if ( !t_bFind )
 		{
-			locale::global(locale("C"));//»¹Ô­È«¾ÖÇøÓòÉè¶¨
-
+			locale::global(locale("C"));//è¿˜åŸå…¨å±€åŒºåŸŸè®¾å®š
 			return ClassifierFileNotExist;
 		}
-
 		string t_sKey;
 		string t_sIn;
-
 		t_XML.ResetMainPos();
 		t_XML.FindElem( "ClassifierPar" );    //UserInfo
 		while( t_XML.FindChildElem("Par") )
 		{
 			t_sIn = t_XML.GetChildAttrib( "ANG" );
 			t_RHOGPar.m_nANG = atoi( t_sIn.c_str() );
-
 			t_sIn = t_XML.GetChildAttrib( "CellNumb" );
 			t_RHOGPar.m_nCellNumb = atoi( t_sIn.c_str() );
-
 			t_sIn = t_XML.GetChildAttrib( "CellPerBlob" );
 			t_RHOGPar.m_nCellPerBlob = atoi( t_sIn.c_str() );
-
 			t_sIn = t_XML.GetChildAttrib( "BIN" );
 			t_RHOGPar.m_nBIN = atoi( t_sIn.c_str() );
-
 			t_sIn = t_XML.GetChildAttrib( "ImageWidth" );
 			t_RHOGPar.m_nImageWidth = atoi( t_sIn.c_str() );
-
 			t_sIn = t_XML.GetChildAttrib( "ClassType" );
 			t_RHOGPar.m_nClassType = atoi( t_sIn.c_str() );
-
 			t_sIn = t_XML.GetChildAttrib( "Sym" );
 			if ( t_sIn == "0" )
 			{
@@ -553,7 +488,6 @@ int RHOG::LoadClassifier( string t_sClassFilePath )
 			{
 				t_RHOGPar.m_bSym = true;
 			}
-
 			t_sIn = t_XML.GetChildAttrib( "RSC" );
 			if ( t_sIn == "0" )
 			{
@@ -563,7 +497,6 @@ int RHOG::LoadClassifier( string t_sClassFilePath )
 			{
 				t_RHOGPar.m_bRSC = true;
 			}
-
 			t_sIn = t_XML.GetChildAttrib( "DSC" );
 			if ( t_sIn == "0" )
 			{
@@ -573,19 +506,15 @@ int RHOG::LoadClassifier( string t_sClassFilePath )
 			{
 				t_RHOGPar.m_bDSC = true;
 			}
-
 			t_sIn = t_XML.GetChildAttrib( "FilterSize" );
 			t_RHOGPar.m_nFilterSize = atoi( t_sIn.c_str() );
 		}
-
 		t_XML.FindElem( "ClassifierPar" );    //UserInfo
 		t_XML.RemoveElem();
 		t_XML.Save( t_sClassFilePath );
 	}
-
-	SetPar( t_RHOGPar );		//ÖØĞÂÉèÖÃ²ÎÊı
-
-	//¶ÁÈ¡·ÖÀàÆ÷
+	SetPar( t_RHOGPar );		//é‡æ–°è®¾ç½®å‚æ•°
+	//è¯»å–åˆ†ç±»å™¨
 	switch( m_nClassType )
 	{
 	case Adaboost:	{ 
@@ -594,14 +523,12 @@ int RHOG::LoadClassifier( string t_sClassFilePath )
 		m_pClassifier = (void *)t_pBoost;
 		break;
 					}
-
 	case Rtree:		{ 
 		CvRTrees * t_pRTrees = new CvRTrees;
 		t_pRTrees->load( t_sClassFilePath.c_str() );
 		m_pClassifier = (void *)t_pRTrees;
 		break;
 					}
-
 	case SVMC:		{ 
 		CvSVM * t_pSVM = new CvSVM;
 		t_pSVM->load( t_sClassFilePath.c_str() );
@@ -611,159 +538,124 @@ int RHOG::LoadClassifier( string t_sClassFilePath )
 	default: return WrongClassifierType;
 		break;
 	}
-
-
-	//ÖØĞÂĞ´ÈëĞÅÏ¢
-	//Ğ´Èë²ÎÊıĞÅÏ¢
+	//é‡æ–°å†™å…¥ä¿¡æ¯
+	//å†™å…¥å‚æ•°ä¿¡æ¯
 	{
 		string t_sKey;
 		string t_sOut;
-
 		CMarkup t_XML;  
 		t_XML.Load( t_sClassFilePath );   
-
 		t_XML.AddElem( "ClassifierPar" );
-
 		t_XML.IntoElem();
-
 		t_XML.AddElem( "Par" );
-
-		char p[32]={0,};//³õÊ¼»¯ÁÙÊ±×Ö·û´®
-
+		char p[32]={0,};//åˆå§‹åŒ–ä¸´æ—¶å­—ç¬¦ä¸²
 		t_sKey = "ANG";
 		sprintf( p,"%d", m_nANG );
 		t_sOut = p;
 		t_XML.AddAttrib( t_sKey, t_sOut );
-
 		t_sKey = "CellNumb";
 		sprintf( p,"%d", m_nCellNumb );
 		t_sOut = p;
 		t_XML.AddAttrib( t_sKey, t_sOut );
-
 		t_sKey = "CellPerBlob";
 		sprintf( p,"%d", m_nCellPerBlob );
 		t_sOut = p;
 		t_XML.AddAttrib( t_sKey, t_sOut );
-
 		t_sKey = "BIN";
 		sprintf( p,"%d", m_nBIN );
 		t_sOut = p;
 		t_XML.AddAttrib( t_sKey, t_sOut );
-
 		t_sKey = "ImageWidth";
 		sprintf( p,"%d", m_nImageWidth );
 		t_sOut = p;
 		t_XML.AddAttrib( t_sKey, t_sOut );
-
 		t_sKey = "ClassType";
 		sprintf( p,"%d", m_nClassType );
 		t_sOut = p;
 		t_XML.AddAttrib( t_sKey, t_sOut );
-
 		t_sKey = "Sym";
 		sprintf( p,"%d", m_bSym );
 		t_sOut = p;
 		t_XML.AddAttrib( t_sKey, t_sOut );
-
 		t_sKey = "RSC";
 		sprintf( p,"%d", m_bRSC );
 		t_sOut = p;
 		t_XML.AddAttrib( t_sKey, t_sOut );
-
 		t_sKey = "DSC";
 		sprintf( p,"%d", m_bDSC );
 		t_sOut = p;
 		t_XML.AddAttrib( t_sKey, t_sOut );
-
 		t_sKey = "FilterSize";
 		sprintf( p,"%d", m_nFilterSize );
 		t_sOut = p;
 		t_XML.AddAttrib( t_sKey, t_sOut );
-
 		t_XML.OutOfElem();
-
 		t_XML.Save( t_sClassFilePath );
 	}
-
-	locale::global(locale("C"));//»¹Ô­È«¾ÖÇøÓòÉè¶¨
-
+	locale::global(locale("C"));//è¿˜åŸå…¨å±€åŒºåŸŸè®¾å®š
 	return 1;
 }//LoadClassifier
-
-
 /*****************************************************************
 Name:			SetSavePatchImage
 Inputs:
-	bool t_bPosSave - ÊÇ·ñ±£´æÕıÑù±¾×ÓÍ¼
-	bool t_bNegSave - ÊÇ·ñ±£´æ¸ºÑù±¾×ÓÍ¼
-	string t_sPosPath - ÕıÑù±¾×ÓÍ¼±£´æÂ·¾¶
-	string t_sNegPath - ¸ºÑù±¾×ÓÍ¼±£´æÂ·¾¶
+	bool t_bPosSave - æ˜¯å¦ä¿å­˜æ­£æ ·æœ¬å­å›¾
+	bool t_bNegSave - æ˜¯å¦ä¿å­˜è´Ÿæ ·æœ¬å­å›¾
+	string t_sPosPath - æ­£æ ·æœ¬å­å›¾ä¿å­˜è·¯å¾„
+	string t_sNegPath - è´Ÿæ ·æœ¬å­å›¾ä¿å­˜è·¯å¾„
 Return Value:
 	none
-Description:	ÉèÖÃÊÇ·ñ±£´æÕı/¸º²âÊÔ·Ö¸î×ÓÍ¼£¨ÓÃÓÚ·ÖÎöºÍ¶ş´ÎÑµÁ·£©
+Description:	è®¾ç½®æ˜¯å¦ä¿å­˜æ­£/è´Ÿæµ‹è¯•åˆ†å‰²å­å›¾ï¼ˆç”¨äºåˆ†æå’ŒäºŒæ¬¡è®­ç»ƒï¼‰
 *****************************************************************/
 void RHOG::SetSavePatchImage( bool t_bPosSave, bool t_bNegSave, string t_sPosPath, string t_sNegPath )
 {
 	m_bSavePosPatch = t_bPosSave;
 	m_bSaveNegPatch = t_bNegSave;
-
 	m_sPosPatchPath = t_sPosPath;
 	m_sNegPatchPath = t_sNegPath;
 }//SetSavePatchImage
-
-
 /*****************************************************************
 Name:			Training
 Inputs:
-	string t_sPosPath - ÕıÑù±¾µÄÂ·¾¶
-	string t_sNegPath - ¸ºÑù±¾µÄÂ·¾¶
+	string t_sPosPath - æ­£æ ·æœ¬çš„è·¯å¾„
+	string t_sNegPath - è´Ÿæ ·æœ¬çš„è·¯å¾„
 Return Value:
-	int - <0 ´íÎó´úÂë
-		  1  ÕıÈ··µ»Ø
-Description:	ÑµÁ··ÖÀàÆ÷£¬ÑµÁ·½á¹ûĞèSaveClassifierº¯Êı±£´æ
+	int - <0 é”™è¯¯ä»£ç 
+		  1  æ­£ç¡®è¿”å›
+Description:	è®­ç»ƒåˆ†ç±»å™¨ï¼Œè®­ç»ƒç»“æœéœ€SaveClassifierå‡½æ•°ä¿å­˜
 *****************************************************************/
 int RHOG::Training( string t_sPosPath, string t_sNegPath )
 {
-	//»ñÈ¡ÕıÀıÍ¼ÏñÎÄ¼şÃû¶ÓÁĞ
-	int t_nPosNumber;			//ÕıÑù±¾ÊıÁ¿
-	vector <string> t_vPosFileList;	//ÓÃÓÚ±£´æÍ¼ÏñÃû³Æ¶ÓÁĞ
+	//è·å–æ­£ä¾‹å›¾åƒæ–‡ä»¶åé˜Ÿåˆ—
+	int t_nPosNumber;			//æ­£æ ·æœ¬æ•°é‡
+	vector <string> t_vPosFileList;	//ç”¨äºä¿å­˜å›¾åƒåç§°é˜Ÿåˆ—
 	t_nPosNumber = GetImageList( t_sPosPath, t_vPosFileList );
-
 	if ( t_nPosNumber < 20 )
 	{
 		return NotEnoughSampleForTrainPos;
 	}
-
-	//»ñÈ¡·´ÀıÍ¼ÏñÎÄ¼şÃû¶ÓÁĞ
-	int t_nNegNumber;			//¸ºÑù±¾ÊıÁ¿
-	vector <string> t_vNegFileList;	//ÓÃÓÚ±£´æÍ¼ÏñÃû³Æ¶ÓÁĞ
+	//è·å–åä¾‹å›¾åƒæ–‡ä»¶åé˜Ÿåˆ—
+	int t_nNegNumber;			//è´Ÿæ ·æœ¬æ•°é‡
+	vector <string> t_vNegFileList;	//ç”¨äºä¿å­˜å›¾åƒåç§°é˜Ÿåˆ—
 	t_nNegNumber = GetImageList( t_sNegPath, t_vNegFileList );
 	if ( t_nNegNumber < 20 )
 	{
 		return NotEnoughSampleForTrainNeg;
 	}
-
-	//¿ª±ÙÌØÕ÷´æ´¢¿Õ¼äºÍ±êÇ©´æ´¢¿Õ¼ä
-	int t_nSampleNumber;		//×ÜÑù±¾ÊıÁ¿
+	//å¼€è¾Ÿç‰¹å¾å­˜å‚¨ç©ºé—´å’Œæ ‡ç­¾å­˜å‚¨ç©ºé—´
+	int t_nSampleNumber;		//æ€»æ ·æœ¬æ•°é‡
 	t_nSampleNumber = t_nPosNumber + t_nNegNumber * ( m_nANG / 2 );
-
 	Clear();
-
-	InitFeatures();			//¿ª±ÙÌØÕ÷¿Õ¼ä
-
+	InitFeatures();			//å¼€è¾Ÿç‰¹å¾ç©ºé—´
 	CvMat * t_FeatureMat;
 	t_FeatureMat = cvCreateMat( t_nSampleNumber, m_nFeatureNumber, CV_32FC1 );
-
 	CvMat * t_ResponseMat;
 	t_ResponseMat = cvCreateMat( t_nSampleNumber, 1, CV_32FC1 );
-
-	//¹Ø±ÕÒÑ´ò¿ªµÄ·ÖÀàÆ÷
+	//å…³é—­å·²æ‰“å¼€çš„åˆ†ç±»å™¨
 	if ( m_pClassifier != NULL )
 	{
 		CvBoost *t_Booster;
 		CvRTrees *t_RTrees;
 		CvSVM *t_SVM;
-
 		if ( m_nClassType == Rtree )
 		{
 			t_RTrees=(CvRTrees*)m_pClassifier;
@@ -783,74 +675,58 @@ int RHOG::Training( string t_sPosPath, string t_sNegPath )
 			m_pClassifier=NULL;
 		}
 	}
-
-	//¼ÆËãÕıÀıÌØÕ÷¶ÓÁĞ
+	//è®¡ç®—æ­£ä¾‹ç‰¹å¾é˜Ÿåˆ—
 	float * t_pFeature;
 	t_pFeature = new float[m_nFeatureNumber];
-
 	int i,j;
 	for ( i = 0; i < t_nPosNumber; ++i )
 	{
-		//¼ÆËãÌØÕ÷
+		//è®¡ç®—ç‰¹å¾
 		ListImage t_Img;
 		t_Img.LoadImageFromFile( t_vPosFileList[i].c_str() );
 		t_Img.ConvertToGreyImg();
-
 		Mat t_Image;
 		cvtList2Mat( &t_Img, t_Image );
-
-		CountFeatureFromImg( t_Image, t_pFeature );	//¼ÆËãÌØÕ÷
-
+		CountFeatureFromImg( t_Image, t_pFeature );	//è®¡ç®—ç‰¹å¾
 		float * t_pPos;
 		t_pPos = &t_FeatureMat->data.fl[t_FeatureMat->width * i];
 		memcpy( t_pPos, t_pFeature, m_nFeatureNumber * sizeof( float ) );
 		t_ResponseMat->data.fl[i] = 1;
 	}
-
-	//¼ÆËã·´ÀıÌØÕ÷¶ÓÁĞ
+	//è®¡ç®—åä¾‹ç‰¹å¾é˜Ÿåˆ—
 	for ( i = 0; i < t_nNegNumber; ++i )
 	{
-		//¼ÆËãÌØÕ÷
+		//è®¡ç®—ç‰¹å¾
 		ListImage t_Img;
 		t_Img.LoadImageFromFile( t_vNegFileList[i].c_str() );
-
 		Mat t_Image;
 		cvtList2Mat( &t_Img, t_Image );
-
 		CountFeatureFromImg( t_Image, t_pFeature );
-
-		//·´ÀıĞı×ªÊ¹ÓÃ
+		//åä¾‹æ—‹è½¬ä½¿ç”¨
 		for ( j = 0; j < ( m_nANG / 2 ); j++ )
 		{
 			float * t_pPos;
 			t_pPos = &t_FeatureMat->data.fl[t_FeatureMat->width * ( t_nPosNumber + ( i * ( m_nANG / 2 ) + j ) )];
-
 			memcpy( t_pPos, 
 					&t_pFeature[j * 2 * m_nANGWidth], 
 					(m_nANG - j * 2) * m_nANGWidth * sizeof ( float ) );
-
 			if ( j > 0 )
 			{
 				memcpy( &t_pPos[(m_nANG - j * 2) * m_nANGWidth], 
 						t_pFeature, 
 						j * 2 * m_nANGWidth * sizeof ( float ) );
 			}
-
 			if ( m_bSym )
 			{
 				memcpy( &t_pPos[m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN],
 						&t_pFeature[m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN],
 						m_nANG * m_nCellNumb * sizeof ( float ) / 2 );
 			}
-
 			t_ResponseMat->data.fl[t_nPosNumber + i * ( m_nANG / 2 ) + j] = 0;
 		}
 	}
-
 	delete [] t_pFeature;
-
-
-	//ÉèÖÃ·ÖÀàÆ÷²ÎÊı
+	//è®¾ç½®åˆ†ç±»å™¨å‚æ•°
 	if ( m_nClassType == Rtree )
 	{
 		float priors[] = {1,1};  // weights of each classification for classes
@@ -868,12 +744,10 @@ int RHOG::Training( string t_sPosPath, string t_sNegPath )
 										);
 		CvRTrees *t_pRTree;
 		t_pRTree = new CvRTrees;
-
-		//¿ªÊ¼ÑµÁ·
+		//å¼€å§‹è®­ç»ƒ
 		t_pRTree->train( t_FeatureMat, CV_ROW_SAMPLE, t_ResponseMat,
 			0, 0, 0, 0, params );
-
-		//±£´æ½á¹û
+		//ä¿å­˜ç»“æœ
 		m_pClassifier = (void *)t_pRTree;
 	}
 	else if ( m_nClassType == Adaboost )
@@ -881,51 +755,43 @@ int RHOG::Training( string t_sPosPath, string t_sNegPath )
 		CvBoost *t_pBooster;
 		t_pBooster = new CvBoost;
 		CvBoostParams t_BoostParams( CvBoost::REAL, 150, 0, 1, false, 0 );
-
-		//¿ªÊ¼ÑµÁ·
+		//å¼€å§‹è®­ç»ƒ
 		t_pBooster->train( t_FeatureMat, CV_ROW_SAMPLE, t_ResponseMat, 0, 0, 0, 0, t_BoostParams, false );
-
-		//±£´æ½á¹û
+		//ä¿å­˜ç»“æœ
 		m_pClassifier = (void *)t_pBooster;
 	}
 	else
 	{
-		//ÉèÖÃÖ§³ÖÏòÁ¿»úµÄ²ÎÊı  
+		//è®¾ç½®æ”¯æŒå‘é‡æœºçš„å‚æ•°  
 		CvSVMParams params;
-		params.svm_type    = CvSVM::C_SVC;//SVMÀàĞÍ£ºÊ¹ÓÃCÖ§³ÖÏòÁ¿»ú
-		params.kernel_type = CvSVM::LINEAR;//ºËº¯ÊıÀàĞÍ£ºÏßĞÔ
-		params.term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 100, 1e-6);//ÖÕÖ¹×¼Ôòº¯Êı£ºµ±µü´ú´ÎÊı´ïµ½×î´óÖµÊ±ÖÕÖ¹
-
-		//ÑµÁ·SVM
-		//½¨Á¢Ò»¸öSVMÀàµÄÊµÀı
+		params.svm_type    = CvSVM::C_SVC;//SVMç±»å‹ï¼šä½¿ç”¨Cæ”¯æŒå‘é‡æœº
+		params.kernel_type = CvSVM::LINEAR;//æ ¸å‡½æ•°ç±»å‹ï¼šçº¿æ€§
+		params.term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 100, 1e-6);//ç»ˆæ­¢å‡†åˆ™å‡½æ•°ï¼šå½“è¿­ä»£æ¬¡æ•°è¾¾åˆ°æœ€å¤§å€¼æ—¶ç»ˆæ­¢
+		//è®­ç»ƒSVM
+		//å»ºç«‹ä¸€ä¸ªSVMç±»çš„å®ä¾‹
 		CvSVM *t_pSVM;
 		t_pSVM = new CvSVM;
-		//ÑµÁ·Ä£ĞÍ£¬²ÎÊıÎª£ºÊäÈëÊı¾İ¡¢ÏìÓ¦¡¢XX¡¢XX¡¢²ÎÊı£¨Ç°ÃæÉèÖÃ¹ı£©
+		//è®­ç»ƒæ¨¡å‹ï¼Œå‚æ•°ä¸ºï¼šè¾“å…¥æ•°æ®ã€å“åº”ã€XXã€XXã€å‚æ•°ï¼ˆå‰é¢è®¾ç½®è¿‡ï¼‰
 		t_pSVM->train( t_FeatureMat, t_ResponseMat, 0, 0, params );  
-
-		//±£´æ½á¹û
+		//ä¿å­˜ç»“æœ
 		m_pClassifier = (void *)t_pSVM;
 	}
-
 	cvReleaseMat( &t_FeatureMat );
 	cvReleaseMat( &t_ResponseMat );
-
 	return 1;
 }//Training
-
-
 /*****************************************************************
 Name:			Test
 Inputs:
-	string t_sPosPath - ÕıÑù±¾Â·¾¶
-	string t_sNegPath - ¸ºÑù±¾Â·¾¶
-	float &t_fPosRate - ÕıÑù±¾ÕıÈ·ÂÊ
-	float &t_fNegRate - ¸ºÑù±¾ÕıÈ·ÂÊ
+	string t_sPosPath - æ­£æ ·æœ¬è·¯å¾„
+	string t_sNegPath - è´Ÿæ ·æœ¬è·¯å¾„
+	float &t_fPosRate - æ­£æ ·æœ¬æ­£ç¡®ç‡
+	float &t_fNegRate - è´Ÿæ ·æœ¬æ­£ç¡®ç‡
 Return Value:
-	int - <0 ´íÎó´úÂë
-		  1  ÕıÈ··µ»Ø
-Description:	²âÊÔ·ÖÀàÆ÷ÕıÈ·ÂÊ£¬ÒÔ×ÓÍ¼Îª²âÊÔÍ¼Æ¬£¬
-				²»Í¬ÓÚÕı³£µÄÄ¿±ê¼ì²â¡£
+	int - <0 é”™è¯¯ä»£ç 
+		  1  æ­£ç¡®è¿”å›
+Description:	æµ‹è¯•åˆ†ç±»å™¨æ­£ç¡®ç‡ï¼Œä»¥å­å›¾ä¸ºæµ‹è¯•å›¾ç‰‡ï¼Œ
+				ä¸åŒäºæ­£å¸¸çš„ç›®æ ‡æ£€æµ‹ã€‚
 *****************************************************************/
 int RHOG::Test( string t_sPosPath, string t_sNegPath, float &t_fPosRate, float &t_fNegRate )
 {
@@ -933,41 +799,30 @@ int RHOG::Test( string t_sPosPath, string t_sNegPath, float &t_fPosRate, float &
 	{
 		return ClassifierNotExist;
 	}
-
-	//»ñÈ¡ÕıÀıÍ¼ÏñÎÄ¼şÃû¶ÓÁĞ
-	int t_nPosNumber;			//ÕıÑù±¾ÊıÁ¿
-	vector <string> t_vPosFileList;	//ÓÃÓÚ±£´æÍ¼ÏñÃû³Æ¶ÓÁĞ
-
+	//è·å–æ­£ä¾‹å›¾åƒæ–‡ä»¶åé˜Ÿåˆ—
+	int t_nPosNumber;			//æ­£æ ·æœ¬æ•°é‡
+	vector <string> t_vPosFileList;	//ç”¨äºä¿å­˜å›¾åƒåç§°é˜Ÿåˆ—
 	t_nPosNumber = GetImageList( t_sPosPath, t_vPosFileList );
-
-
-	//»ñÈ¡·´ÀıÍ¼ÏñÎÄ¼şÃû¶ÓÁĞ
-	int t_nNegNumber;			//¸ºÑù±¾ÊıÁ¿
-	vector <string> t_vNegFileList;	//ÓÃÓÚ±£´æÍ¼ÏñÃû³Æ¶ÓÁĞ
+	//è·å–åä¾‹å›¾åƒæ–‡ä»¶åé˜Ÿåˆ—
+	int t_nNegNumber;			//è´Ÿæ ·æœ¬æ•°é‡
+	vector <string> t_vNegFileList;	//ç”¨äºä¿å­˜å›¾åƒåç§°é˜Ÿåˆ—
 	t_nNegNumber = GetImageList( t_sNegPath, t_vNegFileList );
-
-	//²âÊÔ´úÂë£¬ÓÃÓÚ²âÊÔĞ§¹û
+	//æµ‹è¯•ä»£ç ï¼Œç”¨äºæµ‹è¯•æ•ˆæœ
 	float t_fSumPos;
 	t_fSumPos = 0;
-
 	CvMat * t_FeatureMat;
 	t_FeatureMat = cvCreateMat( m_nFeatureNumber, 1, CV_32FC1 );
-
 	float * t_pFeature;
 	t_pFeature = new float[m_nFeatureNumber];
-
 	int i;
 	for ( i = 0; i < t_nPosNumber; ++i )
 	{
 		ListImage t_Img;
 		t_Img.LoadImageFromFile( t_vPosFileList[i].c_str() );
-
 		Mat t_Image;
 		cvtList2Mat( &t_Img, t_Image );
-
 		CountFeatureFromImg( t_Image, t_pFeature );
 		memcpy( t_FeatureMat->data.fl, t_pFeature, m_nFeatureNumber * sizeof ( float ) );
-
 		float t_nS;
 		if ( m_nClassType == Rtree )
 		{
@@ -981,24 +836,19 @@ int RHOG::Test( string t_sPosPath, string t_sNegPath, float &t_fPosRate, float &
 		{
 			t_nS = ((CvSVM*)m_pClassifier)->predict( t_FeatureMat );
 		}
-
 		t_fSumPos += t_nS;
 	}
-	t_fPosRate = t_fSumPos / t_nPosNumber;		//ÕıÑù±¾ÕıÈ·ÂÊ
-
+	t_fPosRate = t_fSumPos / t_nPosNumber;		//æ­£æ ·æœ¬æ­£ç¡®ç‡
 	float t_fSumNeg;
 	t_fSumNeg = (float)t_nNegNumber;
 	for ( i = 0; i < t_nNegNumber; ++i )
 	{
 		ListImage t_Img;
 		t_Img.LoadImageFromFile( t_vNegFileList[i].c_str() );
-
 		Mat t_Image;
 		cvtList2Mat( &t_Img, t_Image );
-
 		CountFeatureFromImg( t_Image, t_pFeature );
 		memcpy( t_FeatureMat->data.fl, t_pFeature, m_nFeatureNumber * sizeof ( float ) );
-
 		float t_nS;
 		if ( m_nClassType == Rtree )
 		{
@@ -1012,67 +862,57 @@ int RHOG::Test( string t_sPosPath, string t_sNegPath, float &t_fPosRate, float &
 		{
 			t_nS = ((CvSVM*)m_pClassifier)->predict( t_FeatureMat );
 		}
-
 		t_fSumNeg -= t_nS;
 	}
-	t_fNegRate = t_fSumNeg / t_nNegNumber;		//¸ºÑù±¾ÕıÈ·ÂÊ
-
+	t_fNegRate = t_fSumNeg / t_nNegNumber;		//è´Ÿæ ·æœ¬æ­£ç¡®ç‡
 	delete [] t_pFeature;
-	cvReleaseMat( &t_FeatureMat );	//ÊÍ·Å×ÊÔ´
-
+	cvReleaseMat( &t_FeatureMat );	//é‡Šæ”¾èµ„æº
 	return 1;
 }//Test
-
-
 /*****************************************************************
 Name:			SearchTarget
 Inputs:
-	ListImage *SrcImg - ´ıËÑË÷µÄÍ¼Ïñ
-	iRect *& t_pRect - Ä¿±ê¶ÓÁĞ
-	float t_fStartRat - ¿ªÊ¼Æ¥ÅäÊ±µÄËõ·Å±ÈÀı£¬³õÊ¼»¯Îª0.5
-	float t_fStepSize - Ã¿´ÎËÑË÷Ê±Í¼ÏñËõ·ÅµÄ±ÈÀı¸Ä±äÁ¿£¬³õÊ¼»¯Îª0.1
-	int t_nResizeStep - Æ¥ÅäÊ±Í¼ÏñËõ·ÅµÄ´ÎÊı
-	int t_nMatchTime - Æ¥ÅäÊ±µÄÖØµşãĞÖµ
-	int t_nSearchStep - Æ¥ÅäÊ±»¬¶¯´°µÄ»¬¶¯²½³¤
+	ListImage *SrcImg - å¾…æœç´¢çš„å›¾åƒ
+	iRect *& t_pRect - ç›®æ ‡é˜Ÿåˆ—
+	float t_fStartRat - å¼€å§‹åŒ¹é…æ—¶çš„ç¼©æ”¾æ¯”ä¾‹ï¼Œåˆå§‹åŒ–ä¸º0.5
+	float t_fStepSize - æ¯æ¬¡æœç´¢æ—¶å›¾åƒç¼©æ”¾çš„æ¯”ä¾‹æ”¹å˜é‡ï¼Œåˆå§‹åŒ–ä¸º0.1
+	int t_nResizeStep - åŒ¹é…æ—¶å›¾åƒç¼©æ”¾çš„æ¬¡æ•°
+	int t_nMatchTime - åŒ¹é…æ—¶çš„é‡å é˜ˆå€¼
+	int t_nSearchStep - åŒ¹é…æ—¶æ»‘åŠ¨çª—çš„æ»‘åŠ¨æ­¥é•¿
 Return Value:
-	int - >0 Ä¿±êÊıÁ¿
-		  <0 ¶ÔÓ¦´íÎó´úÂë
-Description:	ÔÚÍ¼ÏñÖĞ¼ìË÷Ä¿±ê
+	int - >0 ç›®æ ‡æ•°é‡
+		  <0 å¯¹åº”é”™è¯¯ä»£ç 
+Description:	åœ¨å›¾åƒä¸­æ£€ç´¢ç›®æ ‡
 *****************************************************************/
 int RHOG::SearchTarget( ListImage *SrcImg, iRect *& t_pRect, 
 						float t_fStartRate, float t_fStepSize, int t_nResizeStep,
 						int t_nMatchTime,
 						int t_nSearchStep )
 {
-	//ÅĞ¶ÏÊäÈë
+	//åˆ¤æ–­è¾“å…¥
 	if ( SrcImg->GetImgWidth() < 70 || SrcImg->GetImgHeight() < 70 )
 	{
 		return InputImageError;
 	}
-
 	if ( SrcImg->GetImgDataType() != uint_8 )
 	{
 		return InputImageNotSupport;
 	}
-
 	if ( t_nSearchStep > 0 )
 	{
 		m_nSearchStep = t_nSearchStep;
 	}
-
 	if ( t_nMatchTime <= 0 )
 	{
 		t_nMatchTime = m_nMatchTime;
 	}
-
 	if ( t_fStartRate <= 0.1f || t_fStartRate > 3.0f || fabs( t_fStepSize ) < 0.01f 
 		|| t_fStartRate + t_fStepSize * t_nResizeStep > 3.0f
 		|| t_fStartRate + t_fStepSize * t_nResizeStep <= 0.1f )
 	{
 		return ParIllegal;
 	}
-
-	//ÅĞ¶Ï·ÖÀàÆ÷ÊÇ·ñ´æÔÚ
+	//åˆ¤æ–­åˆ†ç±»å™¨æ˜¯å¦å­˜åœ¨
 	if ( m_pClassifier == NULL )
 	{
 		return ClassifierNotExist;
@@ -1083,28 +923,27 @@ int RHOG::SearchTarget( ListImage *SrcImg, iRect *& t_pRect,
 	Mat t_Image;
 	cvtList2Mat( SrcImg, t_Image );
 	Teststart=clock();
-	//³õÊ¼»¯
+	//åˆå§‹åŒ–
 	Clear();
 	End1=clock();
 	out.Format("clear():  %lf ms",double(End1-Teststart));
 	//AfxMessageBox(out);
 	start4=clock();
-	InitFeatures();			//¿ª±ÙÌØÕ÷¿Õ¼ä
+	InitFeatures();			//å¼€è¾Ÿç‰¹å¾ç©ºé—´
 	End2=clock();
 	out.Format("InitFeatures():  %lf ms",double(End2-start4));
 	//AfxMessageBox(out);
-	//È·¶¨Ëõ·Å²½Êı
+	//ç¡®å®šç¼©æ”¾æ­¥æ•°
 	int t_nRectNumber;
 	t_nRectNumber = 0;
-
-	//Í¼ÏñÔ¤´¦Àí
-	Mat t_SrcImage;		//ÓÃÓÚ´æ·Å32Î»Í¼Ïñ
+	//å›¾åƒé¢„å¤„ç†
+	Mat t_SrcImage;		//ç”¨äºå­˜æ”¾32ä½å›¾åƒ
 	start5=clock();
 	PreProcessImage( t_Image, t_SrcImage );
 	end3=clock();
 	out.Format("PreProcessImage:  %lf ms",double(end3-start5));
 	//AfxMessageBox(out);
-	//²»Í¬³ß¶ÈÏÂËÑË÷
+	//ä¸åŒå°ºåº¦ä¸‹æœç´¢
 	vector <CvRect> t_vTarget;
 	int i;
 	for ( i = 0; i < t_nResizeStep; ++i )
@@ -1113,11 +952,9 @@ int RHOG::SearchTarget( ListImage *SrcImg, iRect *& t_pRect,
 		int t_nNewHeight;
 		t_nNewWidth = (int)( t_Image.cols * t_fStartRate );
 		t_nNewHeight = (int)( t_Image.rows * t_fStartRate );
-
-		Mat t_NewImage( t_nNewHeight, t_nNewWidth, CV_32FC1 );		//²»Í¬³ß¶ÈÍ¼Ïñ
+		Mat t_NewImage( t_nNewHeight, t_nNewWidth, CV_32FC1 );		//ä¸åŒå°ºåº¦å›¾åƒ
 		resize( t_SrcImage, t_NewImage, Size( t_nNewWidth, t_nNewHeight ), 0, 0, CV_INTER_LINEAR );
-
-		//¶ş´ÎÑµÁ·Í¼Æ¬Êä³ö´úÂë
+		//äºŒæ¬¡è®­ç»ƒå›¾ç‰‡è¾“å‡ºä»£ç 
 		if ( t_Image.channels() == 3 )
 		{
 			m_TestImage.create( t_nNewHeight, t_nNewWidth, CV_8UC3 );
@@ -1126,11 +963,10 @@ int RHOG::SearchTarget( ListImage *SrcImg, iRect *& t_pRect,
 		{
 			m_TestImage.create( t_nNewHeight, t_nNewWidth, CV_8UC1 );
 		}
-
 		resize( t_Image, m_TestImage, Size( t_nNewWidth, t_nNewHeight ), 0, 0, CV_INTER_LINEAR );
-		//¶ş´ÎÑµÁ·Í¼Æ¬Êä³ö´úÂë
+		//äºŒæ¬¡è®­ç»ƒå›¾ç‰‡è¾“å‡ºä»£ç 
 		start2=clock();
-		CountGrad( t_NewImage );		//Ô¤¼ÆËãÌİ¶È
+		CountGrad( t_NewImage );		//é¢„è®¡ç®—æ¢¯åº¦
 		end3=clock();
 	out.Format("countGradImage:  %lf ms",double(end3-start2));
 	//AfxMessageBox(out);
@@ -1138,100 +974,145 @@ int RHOG::SearchTarget( ListImage *SrcImg, iRect *& t_pRect,
 	SearchTargetPerImg( t_NewImage, t_fStartRate, t_vTarget );
 	end4=clock();
 	out.Format("SearchTargetPerImage:  %lf ms",double(end4-start3));
-
 	//AfxMessageBox(out);
-		t_fStartRate += t_fStepSize;		//¸üĞÂ·Å´óÂÊ
+		t_fStartRate += t_fStepSize;		//æ›´æ–°æ”¾å¤§ç‡
 	}
 	
 	return RefineTargetSeq( t_vTarget, t_pRect, t_nMatchTime );
 }//SearchTarget
-
-
 /*****************************************************************
 Name:			SearchTargetPerImg
 Inputs:
-	Mat t_Image - ´ı·ÖÎöÍ¼Ïñ
-	float t_fAugRate - Í¼Ïñ·Å´ó±ÈÀı
-	vector <CvRect> &t_vTarget - ·µ»ØµÄ½á¹û¶ÓÁĞ
+	Mat t_Image - å¾…åˆ†æå›¾åƒ
+	float t_fAugRate - å›¾åƒæ”¾å¤§æ¯”ä¾‹
+	vector <CvRect> &t_vTarget - è¿”å›çš„ç»“æœé˜Ÿåˆ—
 Return Value:
-	int - 1 Õı³£·µ»Ø
-		  <0 ¶ÔÓ¦´íÎó´úÂë
-Description:	ÔÚµ¥ÕÅÍ¼ÏñÖĞ¼ìË÷Ä¿±ê
+	int - 1 æ­£å¸¸è¿”å›
+		  <0 å¯¹åº”é”™è¯¯ä»£ç 
+Description:	åœ¨å•å¼ å›¾åƒä¸­æ£€ç´¢ç›®æ ‡
 *****************************************************************/
 int RHOG::SearchTargetPerImg( Mat t_Image, float t_fAugRate, vector <CvRect> &t_vTarget )
 {
-	//ÅĞ¶Ï·ÖÀàÆ÷ÊÇ·ñ´æÔÚ
+	//åˆ¤æ–­åˆ†ç±»å™¨æ˜¯å¦å­˜åœ¨
 	if ( m_pClassifier == NULL )
 	{
 		return ClassifierNotExist;
 	}
 	double count=0;
-	//³õ²½É¨Ãè
+	//åˆæ­¥æ‰«æ
 	vector <CvRect> t_vCurRect;
-
 	CvRect t_Rect;
 	t_Rect.x = 0;
 	t_Rect.y = 0;
 	t_Rect.width = m_nImageWidth;
 	t_Rect.height = m_nImageWidth;
-
-	float * t_pFeature,*t_oFeature;
+	int width=t_Image.cols;
+	int height=t_Image.rows;
+	float * t_pFeature;
 	t_pFeature = new float[m_nFeatureNumber];//2160
 	
 	CvMat * t_FeatureMat;
 	t_FeatureMat = cvCreateMat( m_nFeatureNumber, 1, CV_32FC1 );
 
-	clock_t start1,end1,start2,end2,start3,end3,start4,end4;CString out;
-	start2=clock();
-	int width=t_Image.cols;
-	int height=t_Image.rows;
-	int h_windowx=t_Image.cols/t_Rect.width;
-	int h_windowy=t_Image.rows/t_Rect.height;
-	CountGrad(t_Image);
-	uchar *in_image,*in_m_ANG,*in_m_Mag;
-	in_image=t_Image.data;
-	in_m_ANG=m_ANGImage.data;
-	in_m_Mag=m_MagImage.data;
+	FILE *fp;
+	float *p_Mag;
+	float *p_ANG;
+	
+	long sizem_p=width*height;
+	
+	p_Mag=new float[sizem_p];
+	p_ANG=new float[sizem_p];
+	
+	int i,j;
 
-	//t_oFeature=(float*)malloc(sizeof(float)*m_nFeatureNumber*h_windowx*h_windowy);
-	//t_oFeature=(float*)malloc();
-	//float *out_image,*out_m_ANG,*out_m_Mag;
-	//out_image=(float *)malloc(sizeof(float)*width*height);
-	//out_m_ANG=(float *)malloc(sizeof(float)*width*height);
-	//out_m_Mag=(float *)malloc(sizeof(float)*width*height);
-	//	for(int j=0;j<height;j++)
-	//		for(int i=0;i<width;i++)
-	//			{
-	//				
-	//				out_image[i+j*width]=(float)in_image[i+j*width];
-	//				out_m_ANG[i+j*width]=(float)in_m_ANG[i+j*width];
-	//				out_m_Mag[i+j*width]=(float)in_m_Mag[i+j*width];
-	//				float val=(float)in_image[i+j*width];
-	//				//printf(" m_ANG:%c ",val);
-	//	}
-			countFeatures(t_Image.data,t_oFeature,m_nANGle,m_nMag,m_fNormalMat,m_fMagMat,m_ANGImage.data,m_MagImage.data,width,height);
+	for( i=0;i<height;i++)
+	{
+		float *p_temp_Mag=m_MagImage.ptr<float>(i);
+		float *p_temp_ANg=m_ANGImage.ptr<float>(i);
+		for( j=0;j<width;j++)
+			{ 
 			
-			float temp=t_oFeature[1260];
-			//countFeaturesfloat(out_image,t_oFeature,m_nANGle,m_nMag,m_fNormalMat,m_fMagMat,out_m_ANG,out_m_Mag,width,height);
-	for (int i=0;i<h_windowx;i++)
+				p_Mag[i*width+j]=p_temp_Mag[j];
+		      p_ANG[i*width+j]=p_temp_ANg[j];
+			  if(p_Mag[i*width+j]<0)
+				  p_Mag[i*width+j]=0;
+			  if(p_ANG[i*width+j]<-PI)
+				  p_ANG[i*width+j]=0;
+			  if(p_ANG[i*width+j]<0)
+				  p_ANG[i*width+j]+=PI2;
+		}
+
+	}
+	//fp=fopen("G://t_Mag.txt","w");
+	//for(i=0;i<height;i++)
+	//	{for (j=0;j<width;j++)
+	//	fprintf(fp," %f",p_Mag[i*width+j]);
+	//fprintf(fp,"\n");}
+	//fclose(fp);
+	//fp=fopen("G://t_ANg.txt","w");
+	//for(i=0;i<height;i++)
+	//	{for (j=0;j<width;j++)
+	//	fprintf(fp," %f",p_ANG[i*width+j]);
+	//fprintf(fp,"\n");}
+	//fclose(fp);
+	//
+
+	/*fp=fopen("G://t_fANg.txt","w");
+	for(i=0;i<128;i++)
+		{for (j=0;j<128;j++)
+		fprintf(fp," %f",m_fNormalMat[i*128+j]);
+	fprintf(fp,"\n");}
+	fclose(fp);
+	fp=fopen("G://t_fMag.txt","w");
+	for(i=0;i<128;i++)
+		{for (j=0;j<128;j++)
+		fprintf(fp," %f",m_fMagMat[i*128+j]);
+	fprintf(fp,"\n");}
+	fclose(fp);*/
+	/*fp=fopen("G://t_mask.txt","w");
+	for(i=0;i<128;i++)
+		{for (j=0;j<128;j++)
+		fprintf(fp," %d",mask[i*128+j]);
+	fprintf(fp,"\n");}
+	fclose(fp);
+	fp=fopen("G://t_histo_mask.txt","w");
+	for(i=0;i<128;i++)
+		{for (j=0;j<128;j++)
+		fprintf(fp," %d",histo_mask[i*128+j]);
+	fprintf(fp,"\n");}
+	fclose(fp);*/
+	while ( t_Rect.x + m_nImageWidth < t_Image.cols )
+	{
+		t_Rect.y = 0;
+		while ( t_Rect.y + m_nImageWidth < t_Image.rows )
 		{
-			for(int j=0;j<h_windowy;j++)
-		{
+			countFeaturesfloat(t_pFeature,m_fNormalMat,m_fMagMat,p_ANG,p_Mag,width,
+				height,mask,histo_mask,t_Rect.x,t_Rect.y);
+//fp=fopen("G://my_feat.txt","w");
+//			for (j=0;j<2160;j++)
+//				fprintf(fp," %f",t_pFeature[j]);
+//			fclose(fp);
+//
+//			CountFeature( t_Rect.x, t_Rect.y, t_Rect.width, t_Rect.height, t_pFeature );	//è®¡ç®—ç‰¹å¾
+//		   	fp=fopen("G://re_feat.txt","w");
+//			for (j=0;j<2160;j++)
+//				fprintf(fp," %f",t_pFeature[j]);
+//			fclose(fp);
+
+			
+			int i;
 			float t_nRes = 0;
-			t_pFeature=t_oFeature+(i+h_windowx*j)*2160;
-			for ( int k = 0; k < m_nANG; ++k )
+			for ( i = 0; i < m_nANG; ++i )
 			{
 				memcpy( t_FeatureMat->data.fl, 
-						&t_pFeature[k * m_nANGWidth], 
-						(m_nANG - k) * m_nANGWidth * sizeof ( float ) );
-
-				if ( k > 0 )
+						&t_pFeature[i * m_nANGWidth], 
+						(m_nANG - i) * m_nANGWidth * sizeof ( float ) );
+				if ( i > 0 )
 				{
-					memcpy( &t_FeatureMat->data.fl[(m_nANG - k) * m_nANGWidth], 
+					memcpy( &t_FeatureMat->data.fl[(m_nANG - i) * m_nANGWidth], 
 							t_pFeature, 
-							k * m_nANGWidth * sizeof ( float ) );
+							i * m_nANGWidth * sizeof ( float ) );
 				}
-
 				if ( m_bSym )
 				{
 					memcpy( &t_FeatureMat->data.fl[m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN],
@@ -1248,275 +1129,128 @@ int RHOG::SearchTargetPerImg( Mat t_Image, float t_fAugRate, vector <CvRect> &t_
 				{
 					break;
 				}
-			}
-
+	}
+			
 			if( t_nRes > 0.5f )
 			{
 				CvRect t_AddRect;
 				t_AddRect.x = (int)( ( t_Rect.x + t_Rect.width * 0.5f ) / t_fAugRate );
 				t_AddRect.y = (int)( ( t_Rect.y + t_Rect.height * 0.5f ) / t_fAugRate );
-
 				t_AddRect.width = (int)( m_nImageWidth / t_fAugRate ) - 3;
 				t_AddRect.height = t_AddRect.width;
-
 				t_AddRect.width /= 2;
 				t_AddRect.height /= 2;
-
 				t_vTarget.push_back( t_AddRect );
-
 			}
-
-			//²âÊÔ×ÓÍ¼Êä³öÄ£¿é
-			if ( m_bSavePosPatch )
-			{	
-				if( t_nRes >= 0.5f )
-				{
-					string t_sSave;
-					char p[32] = { 0, };	//³õÊ¼»¯ÁÙÊ±×Ö·û´®
-					sprintf( p,"%d", g_nPosImageNumber );
-					t_sSave = p;
-					t_sSave = m_sPosPatchPath + t_sSave;
-
-					g_nPosImageNumber++;
-
-					Mat t_SaveImage;
-					t_SaveImage = m_TestImage( t_Rect ).clone();
-
-					ListImage t_Img( t_SaveImage.cols, t_SaveImage.rows, t_SaveImage.channels() );
-					memcpy( t_Img.GetImgBuffer(), t_SaveImage.data, t_Img.GetImgDataSize() );
-
-					t_Img.SaveImageToFile( t_sSave.c_str(), LIF_JPEG );
-				}
-			}
-
-			if ( m_bSaveNegPatch )
-			{
-				if( t_nRes <= 0.5f )
-				{
-					string t_sSave;
-					char p[32] = { 0, };	//³õÊ¼»¯ÁÙÊ±×Ö·û´®
-					sprintf( p,"%d", g_nNegImageNumber );
-					t_sSave = p;
-					t_sSave = m_sNegPatchPath + t_sSave;
-
-					g_nNegImageNumber++;
-
-					Mat t_SaveImage;
-					t_SaveImage = m_TestImage( t_Rect ).clone();
-
-					ListImage t_Img( t_SaveImage.cols, t_SaveImage.rows, t_SaveImage.channels() );
-					memcpy( t_Img.GetImgBuffer(), t_SaveImage.data, t_Img.GetImgDataSize() );
-
-
-					t_Img.SaveImageToFile( t_sSave.c_str(), LIF_JPEG );
-				}
-			}
-		}
+			//æµ‹è¯•å­å›¾è¾“å‡ºæ¨¡å—
+			//if ( m_bSavePosPatch )
+			//{	
+			//	if( t_nRes >= 0.5f )
+			//	{
+			//		string t_sSave;
+			//		char p[32] = { 0, };	//åˆå§‹åŒ–ä¸´æ—¶å­—ç¬¦ä¸²
+			//		sprintf( p,"%d", g_nPosImageNumber );
+			//		t_sSave = p;
+			//		t_sSave = m_sPosPatchPath + t_sSave;
+			//		g_nPosImageNumber++;
+			//		Mat t_SaveImage;
+			//		t_SaveImage = m_TestImage( t_Rect ).clone();
+			//		ListImage t_Img( t_SaveImage.cols, t_SaveImage.rows, t_SaveImage.channels() );
+			//		memcpy( t_Img.GetImgBuffer(), t_SaveImage.data, t_Img.GetImgDataSize() );
+			//		t_Img.SaveImageToFile( t_sSave.c_str(), LIF_JPEG );
+			//	}
+			//}
+			//if ( m_bSaveNegPatch )
+			//{
+			//	if( t_nRes <= 0.5f )
+			//	{
+			//		string t_sSave;
+			//		char p[32] = { 0, };	//åˆå§‹åŒ–ä¸´æ—¶å­—ç¬¦ä¸²
+			//		sprintf( p,"%d", g_nNegImageNumber );
+			//		t_sSave = p;
+			//		t_sSave = m_sNegPatchPath + t_sSave;
+			//		g_nNegImageNumber++;
+			//		Mat t_SaveImage;
+			//		t_SaveImage = m_TestImage( t_Rect ).clone();
+			//		ListImage t_Img( t_SaveImage.cols, t_SaveImage.rows, t_SaveImage.channels() );
+			//		memcpy( t_Img.GetImgBuffer(), t_SaveImage.data, t_Img.GetImgDataSize() );
+			//		t_Img.SaveImageToFile( t_sSave.c_str(), LIF_JPEG );
+			//	}
+			//}
 		
+			t_Rect.y += m_nSearchStep;
 		}
+		t_Rect.x += m_nSearchStep;
+	}
 		delete [] t_pFeature;
-		//delete [] t_oFeature;
-	/*	free(out_image);
-		free(out_m_ANG);
-		free(out_m_Mag);*/
 	cvReleaseMat( &t_FeatureMat );
-	//while ( t_Rect.x + m_nImageWidth < t_Image.cols )
-	//{
-	//	t_Rect.y = 0;
-
-	//	while ( t_Rect.y + m_nImageWidth < t_Image.rows )
-	//	{
-	//		start1=clock();
-	//		CountFeature( t_Rect.x, t_Rect.y, t_Rect.width, t_Rect.height, t_pFeature );	//¼ÆËãÌØÕ÷
-	//	
-	//		end1=clock();
-	//		out.Format("CountFeature:  %lf ms",double(end1-start1));
-	//		//AfxMessageBox(out);
-	//		int i;
-	//		float t_nRes = 0;
-	//		for ( i = 0; i < m_nANG; ++i )
-	//		{
-	//			memcpy( t_FeatureMat->data.fl, 
-	//					&t_pFeature[i * m_nANGWidth], 
-	//					(m_nANG - i) * m_nANGWidth * sizeof ( float ) );
-
-	//			if ( i > 0 )
-	//			{
-	//				memcpy( &t_FeatureMat->data.fl[(m_nANG - i) * m_nANGWidth], 
-	//						t_pFeature, 
-	//						i * m_nANGWidth * sizeof ( float ) );
-	//			}
-
-	//			if ( m_bSym )
-	//			{
-	//				memcpy( &t_FeatureMat->data.fl[m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN],
-	//						&t_pFeature[m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN],
-	//						m_nANG * m_nCellNumb * sizeof ( float ) / 2 );
-	//			}
-	//			switch( m_nClassType )
-	//			{
-	//			case Adaboost:	t_nRes = (( CvBoost * )m_pClassifier)->predict( t_FeatureMat );break;
-	//			case Rtree:		t_nRes = (( CvRTrees * )m_pClassifier)->predict( t_FeatureMat );break;
-	//			case SVMC:		t_nRes = (( CvSVM * )m_pClassifier)->predict( t_FeatureMat );  break;
-	//			}	
-	//			if ( t_nRes > 0.5f )
-	//			{
-	//				break;
-	//			}
-	//		}
-
-	//		if( t_nRes > 0.5f )
-	//		{
-	//			CvRect t_AddRect;
-	//			t_AddRect.x = (int)( ( t_Rect.x + t_Rect.width * 0.5f ) / t_fAugRate );
-	//			t_AddRect.y = (int)( ( t_Rect.y + t_Rect.height * 0.5f ) / t_fAugRate );
-
-	//			t_AddRect.width = (int)( m_nImageWidth / t_fAugRate ) - 3;
-	//			t_AddRect.height = t_AddRect.width;
-
-	//			t_AddRect.width /= 2;
-	//			t_AddRect.height /= 2;
-
-	//			t_vTarget.push_back( t_AddRect );
-
-	//		}
-
-	//		//²âÊÔ×ÓÍ¼Êä³öÄ£¿é
-	//		if ( m_bSavePosPatch )
-	//		{	
-	//			if( t_nRes >= 0.5f )
-	//			{
-	//				string t_sSave;
-	//				char p[32] = { 0, };	//³õÊ¼»¯ÁÙÊ±×Ö·û´®
-	//				sprintf( p,"%d", g_nPosImageNumber );
-	//				t_sSave = p;
-	//				t_sSave = m_sPosPatchPath + t_sSave;
-
-	//				g_nPosImageNumber++;
-
-	//				Mat t_SaveImage;
-	//				t_SaveImage = m_TestImage( t_Rect ).clone();
-
-	//				ListImage t_Img( t_SaveImage.cols, t_SaveImage.rows, t_SaveImage.channels() );
-	//				memcpy( t_Img.GetImgBuffer(), t_SaveImage.data, t_Img.GetImgDataSize() );
-
-	//				t_Img.SaveImageToFile( t_sSave.c_str(), LIF_JPEG );
-	//			}
-	//		}
-
-	//		if ( m_bSaveNegPatch )
-	//		{
-	//			if( t_nRes <= 0.5f )
-	//			{
-	//				string t_sSave;
-	//				char p[32] = { 0, };	//³õÊ¼»¯ÁÙÊ±×Ö·û´®
-	//				sprintf( p,"%d", g_nNegImageNumber );
-	//				t_sSave = p;
-	//				t_sSave = m_sNegPatchPath + t_sSave;
-
-	//				g_nNegImageNumber++;
-
-	//				Mat t_SaveImage;
-	//				t_SaveImage = m_TestImage( t_Rect ).clone();
-
-	//				ListImage t_Img( t_SaveImage.cols, t_SaveImage.rows, t_SaveImage.channels() );
-	//				memcpy( t_Img.GetImgBuffer(), t_SaveImage.data, t_Img.GetImgDataSize() );
-
-
-	//				t_Img.SaveImageToFile( t_sSave.c_str(), LIF_JPEG );
-	//			}
-	//		}
-	//		count++;
-	//		t_Rect.y += m_nSearchStep;
-	//	}
-
-	//	t_Rect.x += m_nSearchStep;
-	//}
-	//		out.Format("Ñ­»·:  %lf ´Î",count);
-			//AfxMessageBox(out);
-
+	delete [] p_ANG;
+delete [] p_Mag;
+	//delete(fp);
+	return 1;	
 	
-
-	return 1;
 }//SearchTargetPerImg
-
-
 /*****************************************************************
 Name:			CountFeatureFromImg
 Inputs:
-	Mat t_Image - ´ı¼ÆËãÌØÕ÷µÄÍ¼Ïñ
-	float *t_pFeatures - ·µ»ØµÄÌØÕ÷Êı×é
+	Mat t_Image - å¾…è®¡ç®—ç‰¹å¾çš„å›¾åƒ
+	float *t_pFeatures - è¿”å›çš„ç‰¹å¾æ•°ç»„
 Return Value:
-	int - 1 Õı³£·µ»Ø
-		  <0 ¶ÔÓ¦´íÎó´úÂë
-Description:	¼ÆËãµ¥ÕÅÍ¼Æ¬µÄÌØÕ÷
+	int - 1 æ­£å¸¸è¿”å›
+		  <0 å¯¹åº”é”™è¯¯ä»£ç 
+Description:	è®¡ç®—å•å¼ å›¾ç‰‡çš„ç‰¹å¾
 *****************************************************************/
 int RHOG::CountFeatureFromImg( Mat t_Image, float *t_pFeatures )
 {
-	//Çå¿ÕÏÖÓĞÊı¾İ
+	//æ¸…ç©ºç°æœ‰æ•°æ®
 	Clear();	
-
-	//³õÊ¼»¯ÌØÕ÷¿Õ¼ä
-	InitFeatures();			//¿ª±ÙÌØÕ÷¿Õ¼ä
-
-	//³õÊ¼»¯Í¼Ïñ
+	//åˆå§‹åŒ–ç‰¹å¾ç©ºé—´
+	InitFeatures();			//å¼€è¾Ÿç‰¹å¾ç©ºé—´
+	//åˆå§‹åŒ–å›¾åƒ
 	Mat t_GrayImage;
 	PreProcessImage( t_Image, t_GrayImage );
-
 	m_Image.create( m_nImageWidth, m_nImageWidth, CV_32SC1 );
 	resize( t_GrayImage, m_Image, Size( m_nImageWidth, m_nImageWidth ), 0, 0, CV_INTER_LINEAR );
-
-	//¼ÆËãÌİ¶È
+	//è®¡ç®—æ¢¯åº¦
 	CountGrad( m_Image );
-
-	//¼ÆËãcellÌØÕ÷ÏòÁ¿
+	//è®¡ç®—cellç‰¹å¾å‘é‡
 	CountCell( 0, 0, m_nImageWidth, m_nImageWidth );
-
-	//Æ½»¬CellÌØÕ÷ÏòÁ¿
+	//å¹³æ»‘Cellç‰¹å¾å‘é‡
 	SmoothCell();
-
-	//¶ÔCell½øĞĞ½Ç¶È¼äµÄÆ½»¬
+	//å¯¹Cellè¿›è¡Œè§’åº¦é—´çš„å¹³æ»‘
 	if ( m_bRSC )
 	{
 		RSmoothCell();
 	}
-
-	//¶ÔCell½øĞĞ¾¶ÏòµÄÆ½»¬
+	//å¯¹Cellè¿›è¡Œå¾„å‘çš„å¹³æ»‘
 	if ( m_bDSC )
 	{
 		DSmoothCell();
 	}
-
-	//¼ÆËãm_nBINÌØÕ÷ÏòÁ¿
+	//è®¡ç®—m_nBINç‰¹å¾å‘é‡
 	Countm_nBIN();
-
-	//¹éÒ»»¯m_nBINÌØÕ÷ÏòÁ¿
+	//å½’ä¸€åŒ–m_nBINç‰¹å¾å‘é‡
 	Normalm_nBIN();
-
-	//¼ÆËã¶Ô³ÆÌØÕ÷
+	//è®¡ç®—å¯¹ç§°ç‰¹å¾
 	if ( m_bSym )
 	{
 		CountSym();
 	}
-
 	memcpy( t_pFeatures, m_pfFeature, m_nFeatureNumber * sizeof( float ) );
-
 	return 1;
 }//CountFeatureFromImg
-
-
 /*****************************************************************
 Name:			CountFeature
 Inputs:
-	int t_nX - ÌáÈ¡ÇøÓò×ø±ê
+	int t_nX - æå–åŒºåŸŸåæ ‡
 	int t_nY 
 	int t_nWidth
 	int t_nHeight
-	float *&t_pFeatures - ·µ»ØµÄÌØÕ÷ÏòÁ¿
+	float *&t_pFeatures - è¿”å›çš„ç‰¹å¾å‘é‡
 Return Value:
-	int - 1 Õı³£·µ»Ø
-		  <0 ¶ÔÓ¦´íÎó´úÂë
-Description:	¼ÆËãÖ¸¶¨×ø±êÇøÓòµÄÌØÕ÷£¨´óÍ¼ÖĞµÄ¾Ö²¿×Ó¿é£©
+	int - 1 æ­£å¸¸è¿”å›
+		  <0 å¯¹åº”é”™è¯¯ä»£ç 
+Description:	è®¡ç®—æŒ‡å®šåæ ‡åŒºåŸŸçš„ç‰¹å¾ï¼ˆå¤§å›¾ä¸­çš„å±€éƒ¨å­å—ï¼‰
 *****************************************************************/
 int RHOG::CountFeature( int t_nX, int t_nY, int t_nWidth, int t_nHeight, float *t_pFeatures )
 {
@@ -1528,139 +1262,123 @@ int RHOG::CountFeature( int t_nX, int t_nY, int t_nWidth, int t_nHeight, float *
 //cudaEventCreate(&stop);
 //cudaEventRecord(start, 0);
 //	
-	//_LARGE_INTEGER time_start,s1,s2,s3;  //¿ªÊ¼Ê±¼ä  
-	//_LARGE_INTEGER time_over,e1,e2,e3;   //½áÊøÊ±¼ä  
-	//double dqFreq;      //¼ÆÊ±Æ÷ÆµÂÊ  
-	//LARGE_INTEGER f;    //¼ÆÊ±Æ÷ÆµÂÊ  
+	//_LARGE_INTEGER time_start,s1,s2,s3;  //å¼€å§‹æ—¶é—´  
+	//_LARGE_INTEGER time_over,e1,e2,e3;   //ç»“æŸæ—¶é—´  
+	//double dqFreq;      //è®¡æ—¶å™¨é¢‘ç‡  
+	//LARGE_INTEGER f;    //è®¡æ—¶å™¨é¢‘ç‡  
 	//QueryPerformanceFrequency(&f);  
 	//dqFreq=(double)f.QuadPart;  
 	//QueryPerformanceCounter(&time_start);
-	//¼ÆËãcellÌØÕ÷ÏòÁ¿
+	//è®¡ç®—cellç‰¹å¾å‘é‡
 	CountCell( t_nX, t_nY, t_nWidth, t_nHeight );
-	// QueryPerformanceCounter(&time_over);    //¼ÆÊ±½áÊø  
+	// QueryPerformanceCounter(&time_over);    //è®¡æ—¶ç»“æŸ  
 	// time_elapsed=1000000*(time_over.QuadPart-time_start.QuadPart)/dqFreq;  
-	////³ËÒÔ1000000°Ñµ¥Î»ÓÉÃë»¯ÎªÎ¢Ãë£¬¾«¶ÈÎª1000 000/£¨cpuÖ÷Æµ£©Î¢Ãë  
+	////ä¹˜ä»¥1000000æŠŠå•ä½ç”±ç§’åŒ–ä¸ºå¾®ç§’ï¼Œç²¾åº¦ä¸º1000 000/ï¼ˆcpuä¸»é¢‘ï¼‰å¾®ç§’  
 	//out.Format("Countcell:  %lf us",time_elapsed);
 			//AfxMessageBox(out);
 			 //QueryPerformanceCounter(&s1);
-	//Æ½»¬CellÌØÕ÷ÏòÁ¿
+	//å¹³æ»‘Cellç‰¹å¾å‘é‡
 	SmoothCell();
-	 //QueryPerformanceCounter(&e1);    //¼ÆÊ±½áÊø  
+	 //QueryPerformanceCounter(&e1);    //è®¡æ—¶ç»“æŸ  
 	 //time_elapsed=1000000*(e1.QuadPart-s1.QuadPart)/dqFreq;  
 	 //out.Format("smoothcell:  %lf us",time_elapsed);
 			//AfxMessageBox(out);
-	//¶ÔCell½øĞĞ½Ç¶È¼äµÄÆ½»¬
+	//å¯¹Cellè¿›è¡Œè§’åº¦é—´çš„å¹³æ»‘
 	if ( m_bRSC )
 	{
 		RSmoothCell();
 	}
-
-	//¶ÔCell½øĞĞ¾¶ÏòµÄÆ½»¬
+	//å¯¹Cellè¿›è¡Œå¾„å‘çš„å¹³æ»‘
 	if ( m_bDSC )
 	{
 		DSmoothCell();
 	}
 	 //QueryPerformanceCounter(&s2);
 	
-	//¼ÆËãm_nBINÌØÕ÷ÏòÁ¿
+	//è®¡ç®—m_nBINç‰¹å¾å‘é‡
 	Countm_nBIN();
 	
-	 //QueryPerformanceCounter(&e2);    //¼ÆÊ±½áÊø  
+	 //QueryPerformanceCounter(&e2);    //è®¡æ—¶ç»“æŸ  
 	 //time_elapsed=1000000*(e2.QuadPart-s2.QuadPart)/dqFreq;  
 	 //out.Format("Countm_nBIN():  %lf us",time_elapsed);
 			//AfxMessageBox(out);
 			//QueryPerformanceCounter(&s3);
-	//¹éÒ»»¯m_nBINÌØÕ÷ÏòÁ¿
+	//å½’ä¸€åŒ–m_nBINç‰¹å¾å‘é‡
 	Normalm_nBIN();
-	 //QueryPerformanceCounter(&e3);    //¼ÆÊ±½áÊø  
+	 //QueryPerformanceCounter(&e3);    //è®¡æ—¶ç»“æŸ  
 	 //time_elapsed=1000000*(e3.QuadPart-s3.QuadPart)/dqFreq;  
 	 //out.Format("Normalm_nBIN():  %lf us",time_elapsed);
 			//AfxMessageBox(out);
-	//¼ÆËã¶Ô³ÆÌØÕ÷
+	//è®¡ç®—å¯¹ç§°ç‰¹å¾
 	if ( m_bSym )
 	{
 		CountSym();
 	}
-
-	//¸´ÖÆ´ı·µ»ØµÄÌØÕ÷Öµ
+	//å¤åˆ¶å¾…è¿”å›çš„ç‰¹å¾å€¼
 	memcpy( t_pFeatures, m_pfFeature, m_nFeatureNumber * sizeof( float ) );
-
 	return 1;
 }//CountFeature
-
-
 /*****************************************************************s
 Name:			Clear
 Inputs:
 	none.
 Return Value:
 	none.
-Description:	×¢Ïú¿Õ¼ä
+Description:	æ³¨é”€ç©ºé—´
 *****************************************************************/
 void RHOG::Clear(void)
 {
-	//Çå¿ÕÌØÕ÷Êı¾İ
+	//æ¸…ç©ºç‰¹å¾æ•°æ®
 	if ( m_pfFeature != NULL )
 	{
 		delete [] m_pfFeature;
 		m_pfFeature = NULL;
 	}
-
 	if ( m_pCellFeatures != NULL )
 	{
 		delete [] m_pCellFeatures;
 		m_pCellFeatures = NULL;
 	}
 }//Clear
-
-
 /*****************************************************************
 Name:			InitFeatures
 Inputs:
 	none.
 Return Value:
 	none.
-Description:	³õÊ¼»¯ÌØÕ÷¿Õ¼ä
+Description:	åˆå§‹åŒ–ç‰¹å¾ç©ºé—´
 *****************************************************************/
 void RHOG::InitFeatures(void)
 {
-	//¼ÆËã
-	//Çå¿ÕÌØÕ÷Êı¾İ
+	//è®¡ç®—
+	//æ¸…ç©ºç‰¹å¾æ•°æ®
 	if ( m_pfFeature != NULL )
 	{
 		delete [] m_pfFeature;
 		m_pfFeature = NULL;
 	}
-
 	if ( m_pCellFeatures != NULL )
 	{
 		delete [] m_pCellFeatures;
 		m_pCellFeatures = NULL;
 	}
-
-	m_pfFeature = new float [m_nFeatureNumber];					//¿ª±Ù¿Õ¼ä
-	m_pCellFeatures = new float [m_nANG * m_nCellNumb * m_nBIN];//¿ª±Ù¿Õ¼ä
-
-	m_nCellWidth = ( m_nImageWidth / 2 ) / m_nCellNumb + 1;		//Ã¿¸öcellµÄ¿í¶È
-
+	m_pfFeature = new float [m_nFeatureNumber];					//å¼€è¾Ÿç©ºé—´
+	m_pCellFeatures = new float [m_nANG * m_nCellNumb * m_nBIN];//å¼€è¾Ÿç©ºé—´
+	m_nCellWidth = ( m_nImageWidth / 2 ) / m_nCellNumb + 1;		//æ¯ä¸ªcellçš„å®½åº¦
 }//InitFeatures
-
-
 /*****************************************************************
 Name:			PreProcessImage
 Inputs:
-	Mat t_Image - ÊäÈëÍ¼Ïñ
-	 Mat &t_TarImage - Ô¤´¦ÀíºóÍ¼Ïñ
+	Mat t_Image - è¾“å…¥å›¾åƒ
+	 Mat &t_TarImage - é¢„å¤„ç†åå›¾åƒ
 Return Value:
 	none.
-Description:	Ô¤´¦ÀíÍ¼Ïñ
+Description:	é¢„å¤„ç†å›¾åƒ
 *****************************************************************/
-
 void RHOG::PreProcessImage( Mat t_Image, Mat &t_TarImage )
 {
-	//×ª»Ò¶ÈÍ¼Ïñ£¬²¢Ëõ·ÅÖÁÍ³Ò»´óĞ¡
+	//è½¬ç°åº¦å›¾åƒï¼Œå¹¶ç¼©æ”¾è‡³ç»Ÿä¸€å¤§å°
 	Mat t_GrayImage;
-
 	if ( t_Image.channels() == 3 )
 	{
 		cvtColor( t_Image, t_GrayImage, CV_BGR2GRAY );
@@ -1671,168 +1389,141 @@ void RHOG::PreProcessImage( Mat t_Image, Mat &t_TarImage )
 	}
 	clock_t start1,end1,start2,end2,start3,end3,start4,end4;
 	CString out;
-
 	/*unsigned char *src=t_GrayImage.data;
 	unsigned char *dst=t_GrayImage.data;*/
 	int width;
 	width=t_GrayImage.cols;
 	int height;
 	height=t_GrayImage.rows;
-	//ÂË²¨
+	//æ»¤æ³¢
 		start4=clock();
 	medianBlur( t_GrayImage, t_GrayImage, m_nFilterSize );
 	end4=clock();
-	out.Format("ÖĞÖµÂË²¨:  %lf ms",double(end4-start4));
+	out.Format("ä¸­å€¼æ»¤æ³¢:  %lf ms",double(end4-start4));
 			//AfxMessageBox(out);
 		start1=clock();
 		//MedianFilter(t_GrayImage.data,t_GrayImage.data ,width,height);
 		end1=clock();
-	out.Format("ÖĞÖµÂË²¨:  %lf ms",double(end1-start1));
+	out.Format("ä¸­å€¼æ»¤æ³¢:  %lf ms",double(end1-start1));
 			//AfxMessageBox(out);
 	//imshow("meidan",t_GrayImage);
 	//waitKey(0);
 	GaussianBlur( t_GrayImage, t_GrayImage, cvSize( 3, 3 ), 1 );
-
-	//½«Í¼Ïñ×ªÎªfloatĞÍ£¬²¢¶ÔÍ¼Ïñ½øĞĞ¹éÒ»»¯´¦Àí
+	//å°†å›¾åƒè½¬ä¸ºfloatå‹ï¼Œå¹¶å¯¹å›¾åƒè¿›è¡Œå½’ä¸€åŒ–å¤„ç†
 			start2=clock();
 	t_GrayImage.convertTo( t_TarImage, CV_32F );
 	end2=clock();
-	out.Format("×ª»Ò¶ÈÍ¼:  %lf ms",double(end2-start2));
+	out.Format("è½¬ç°åº¦å›¾:  %lf ms",double(end2-start2));
 			//AfxMessageBox(out);
-	////»Ò¶Ègamma´¦Àí
-	//ÔİÊ±È¥µô
+	////ç°åº¦gammaå¤„ç†
+	//æš‚æ—¶å»æ‰
 			start3=clock();
 	int i, j;
 	for ( j = 0; j < t_Image.rows; ++j )
 	{
 		float *t_pData; 
 		t_pData = t_TarImage.ptr<float>(j);
-
 		for ( i = 0; i < t_Image.cols; ++i )
 		{
 			t_pData[i] = sqrt( t_pData[i] );
 		}
 	}
 	end3=clock();
-	out.Format("gamma¹éÒ»:  %lf ms",double(end3-start3));
+	out.Format("gammaå½’ä¸€:  %lf ms",double(end3-start3));
 			//AfxMessageBox(out);
 }//PreProcessImage
-
-
 /*****************************************************************
 Name:			CountGrad
 Inputs:
-	Mat t_Image - ÊäÈëÍ¼Ïñ
+	Mat t_Image - è¾“å…¥å›¾åƒ
 Return Value:
 	none.
-Description:	¼ÆËãÌİ¶È£¬²¢´æ´¢ÖÁm_MagImage¡¢m_ANGImageÍ¼ÏñÖĞ
+Description:	è®¡ç®—æ¢¯åº¦ï¼Œå¹¶å­˜å‚¨è‡³m_MagImageã€m_ANGImageå›¾åƒä¸­
 *****************************************************************/
 void RHOG::CountGrad( Mat t_Image )
 {
-	//³õÊ¼»¯¿Õ¼ä
+	//åˆå§‹åŒ–ç©ºé—´
 	m_MagImage.create( t_Image.rows, t_Image.cols, CV_32FC1 );
-
 	m_ANGImage.create( t_Image.rows, t_Image.cols, CV_32FC1 );
-
-	//¿ªÊ¼¼ÆËã
+	//å¼€å§‹è®¡ç®—
 	Mat t_DeltaX;
 	t_DeltaX.create( t_Image.rows, t_Image.cols, CV_32FC1 );
-
 	Mat t_DeltaY;
 	t_DeltaY.create( t_Image.rows, t_Image.cols, CV_32FC1 );
-
 	Sobel( t_Image, t_DeltaX, CV_32FC1, 1, 0, 1 );
 	Sobel( t_Image, t_DeltaY, CV_32FC1, 0, 1, 1 );
-
 	int i, j;
 	for ( j = 1; j < t_Image.rows - 1; ++j )
 	{
-		float *t_pPosDeltaX;		//Ô´Êı¾İÖ¸Õë
+		float *t_pPosDeltaX;		//æºæ•°æ®æŒ‡é’ˆ
 		t_pPosDeltaX = t_DeltaX.ptr<float>(j);
-
-		float *t_pPosDeltaY;		//Ô´Êı¾İÖ¸Õë
+		float *t_pPosDeltaY;		//æºæ•°æ®æŒ‡é’ˆ
 		t_pPosDeltaY = t_DeltaY.ptr<float>(j);
-
-		float *t_pPosMag;		//Ìİ¶ÈÄ£Ö¸Õë
+		float *t_pPosMag;		//æ¢¯åº¦æ¨¡æŒ‡é’ˆ
 		t_pPosMag = m_MagImage.ptr<float>(j);
-
-		float *t_pPosm_nANG;		//Ìİ¶È½Ç¶ÈÖ¸Õë
+		float *t_pPosm_nANG;		//æ¢¯åº¦è§’åº¦æŒ‡é’ˆ
 		t_pPosm_nANG = m_ANGImage.ptr<float>(j);
-
 		for ( i = 1; i < t_Image.cols - 1; ++i )
 		{
 			float t_fDeltaX;
 			float t_fDeltaY;
 			t_fDeltaX = t_pPosDeltaX[i];
 			t_fDeltaY = t_pPosDeltaY[i];
-
-			//t_pPosMag[i] = pow( t_fDeltaX * t_fDeltaX + t_fDeltaY * t_fDeltaY, 0.125f );	//¿ÉÌæ»»Ïî£¬¹éÒ»»¯
+			//t_pPosMag[i] = pow( t_fDeltaX * t_fDeltaX + t_fDeltaY * t_fDeltaY, 0.125f );	//å¯æ›¿æ¢é¡¹ï¼Œå½’ä¸€åŒ–
 			t_pPosMag[i] = sqrt( t_fDeltaX * t_fDeltaX + t_fDeltaY * t_fDeltaY );
 			t_pPosm_nANG[i] = atan2( t_fDeltaX, t_fDeltaY );
 		}
 	}
 }//CountGrad
-
-
 /*****************************************************************
 Name:			CountCell
 Inputs:
-	int t_nX - ÇøÓò×ø±ê
+	int t_nX - åŒºåŸŸåæ ‡
 	int t_nY
 	int t_nWidth
 	int t_nHeight
 Return Value:
 	none.
-Description:	¼ÆËãCell
+Description:	è®¡ç®—Cell
 *****************************************************************/
 void RHOG::CountCell( int t_nX, int t_nY, int t_nWidth, int t_nHeight )
 {
 	int t_nEndX;
 	int t_nEndY;
-	t_nEndX = t_nX + t_nWidth - 1;
-	t_nEndY = t_nY + t_nHeight - 1;
-
+	t_nEndX = t_nX + t_nWidth -1;
+	t_nEndY = t_nY + t_nHeight -1;
 	int t_nCellFeatureSize;
 	t_nCellFeatureSize = m_nANG * m_nCellNumb * m_nBIN;
-
 	int i, j;
 	for ( i = 0; i < t_nCellFeatureSize; ++i )
 	{
 		m_pCellFeatures[i] = 0;
 	}
-
-
-	//Éú³Écellfeature
-	int t_nLineWidth;		//Ã¿¸ö·½ÏòµÄ¿í¶È
+	//ç”Ÿæˆcellfeature
+	int t_nLineWidth;		//æ¯ä¸ªæ–¹å‘çš„å®½åº¦
 	t_nLineWidth = m_nCellNumb * m_nBIN;
-
 	for ( j = t_nY + 1; j < t_nEndY; ++j )
 	{
 		float *t_pMagData;
 		float *t_pm_nANGData;
 		t_pMagData = m_MagImage.ptr<float>(j);
 		t_pm_nANGData = m_ANGImage.ptr<float>(j);
-
 		for ( i = t_nX + 1; i < t_nEndX; ++i )
 		{
-			//ÅĞ¶ÏÊÇ·ñ³¬³ö°ë¾¶
+			//åˆ¤æ–­æ˜¯å¦è¶…å‡ºåŠå¾„
 			if ( m_fMagMat[( j - t_nY) * m_nImageWidth + i - t_nX] > m_nImageWidth / 2.0f )
 			{
 				continue;
 			}
-
-			//¼ÆËãm_nBIN
+			//è®¡ç®—m_nBIN
 			float t_fm_nANGel;
 			t_fm_nANGel = t_pm_nANGData[i] - m_fNormalMat[( j - t_nY) * m_nImageWidth + i - t_nX];
-
 			while ( t_fm_nANGel < 0 )
 			{
 				t_fm_nANGel += (float)PI;
 			}
-
 			int t_nm_nBIN =  (int)( t_fm_nANGel * m_nBIN / PI );
-
-			//¼ÆËãÉÈÇø±àºÅ
+			//è®¡ç®—æ‰‡åŒºç¼–å·
 			//int t_nCir;
 			//t_nCir = (int)( m_fMagMat[( j - t_nY) * m_nImageWidth + i - t_nX] / m_nCellWidth);
 			//m_pCellFeatures[t_nLineWidth * m_nANGle[( j - t_nY) * m_nImageWidth + i - t_nX] + t_nCir * m_nBIN + t_nm_nBIN ] += t_pMagData[i];
@@ -1840,24 +1531,20 @@ void RHOG::CountCell( int t_nX, int t_nY, int t_nWidth, int t_nHeight )
 		}
 	}
 }//CountCell
-
-
 /*****************************************************************
 Name:			SmoothCell
 	Inputs:
 none.
 Return Value:
 	none.
-Description:	¶ÔCell½øĞĞÆ½»¬(m_pCellFeatures)
+Description:	å¯¹Cellè¿›è¡Œå¹³æ»‘(m_pCellFeatures)
 *****************************************************************/
 void RHOG::SmoothCell( void )
 {
-	int t_nLineWidth;		//Ã¿¸ö·½ÏòµÄ¿í¶È
+	int t_nLineWidth;		//æ¯ä¸ªæ–¹å‘çš„å®½åº¦
 	t_nLineWidth = m_nCellNumb * m_nBIN;//7*10
-
 	int i, j, k;
-
-	float * t_pTemp;		//ÁÙÊ±±£´æ
+	float * t_pTemp;		//ä¸´æ—¶ä¿å­˜
 	t_pTemp = new float [m_nBIN];
 	for ( k = 0; k < m_nANG; ++k )//18
 	{
@@ -1869,12 +1556,10 @@ void RHOG::SmoothCell( void )
 				int t_nRight;
 				t_nLeft = ( i - 1 + m_nBIN ) % m_nBIN;
 				t_nRight = ( i + 1 ) % m_nBIN;
-
 				t_pTemp[i] = m_pCellFeatures[k * t_nLineWidth + j * m_nBIN + i] * 0.8f 
 					+ m_pCellFeatures[k * t_nLineWidth + j * m_nBIN + t_nLeft] * 0.1f 
 					+ m_pCellFeatures[k * t_nLineWidth + j * m_nBIN + t_nRight] * 0.1f;
 			}
-
 			for ( i = 0; i < m_nBIN; ++i )
 			{
 				m_pCellFeatures[k * t_nLineWidth + j * m_nBIN + i] = t_pTemp[i];
@@ -1883,43 +1568,35 @@ void RHOG::SmoothCell( void )
 	}
 	delete [] t_pTemp;
 }//SmoothCell
-
-
 /*****************************************************************
 Name:			RSmoothCell
 Inputs:
 	none.
 Return Value:
 	none.
-Description:	¶ÔCell½øĞĞ½Ç¶ÈÆ½»¬(m_pCellFeatures)
+Description:	å¯¹Cellè¿›è¡Œè§’åº¦å¹³æ»‘(m_pCellFeatures)
 *****************************************************************/
 void RHOG::RSmoothCell( void )
 {
-	int t_nLineWidth;		//Ã¿¸ö·½ÏòµÄ¿í¶È
+	int t_nLineWidth;		//æ¯ä¸ªæ–¹å‘çš„å®½åº¦
 	t_nLineWidth = m_nCellNumb * m_nBIN;
-
 	int i, j, k;
-
-	float * t_pTemp;		//ÁÙÊ±±£´æÖĞ¼ä½á¹û
+	float * t_pTemp;		//ä¸´æ—¶ä¿å­˜ä¸­é—´ç»“æœ
 	t_pTemp = new float [m_nANG];
 	for ( k = 0; k < m_nCellNumb; ++k )
 	{
 		for ( j = 0; j < m_nBIN; ++j )
 		{
-
-
 			for ( i = 0; i < m_nANG; ++i )
 			{
 				int t_nLeft;
 				int t_nRight;
 				t_nLeft = ( i - 1 + m_nANG ) % m_nANG;
 				t_nRight = ( i + 1 ) % m_nANG;
-
 				t_pTemp[i] = m_pCellFeatures[i * t_nLineWidth + k * m_nBIN + j] * 0.8f 
 					+ m_pCellFeatures[t_nLeft * t_nLineWidth + k * m_nBIN + j] * 0.1f 
 					+ m_pCellFeatures[t_nRight * t_nLineWidth + k * m_nBIN + j] * 0.1f;
 			}
-
 			for ( i = 0; i < m_nANG; ++i )
 			{
 				m_pCellFeatures[i * t_nLineWidth + k * m_nBIN + j] = t_pTemp[i];
@@ -1928,70 +1605,56 @@ void RHOG::RSmoothCell( void )
 	}
 	delete [] t_pTemp;
 }//RSmoothCell
-
-
-
 /*****************************************************************
 Name:			DSmoothCell
 Inputs:
 	none.
 Return Value:
 	none.
-Description:	¶ÔCell½øĞĞ¾¶ÏòÆ½»¬(m_pCellFeatures)
+Description:	å¯¹Cellè¿›è¡Œå¾„å‘å¹³æ»‘(m_pCellFeatures)
 *****************************************************************/
 void RHOG::DSmoothCell( void )
 {
-	int t_nLineWidth;		//Ã¿¸ö·½ÏòµÄ¿í¶È
+	int t_nLineWidth;		//æ¯ä¸ªæ–¹å‘çš„å®½åº¦
 	t_nLineWidth = m_nCellNumb * m_nBIN;
-
 	int i, j, k;
-
-	float * t_pTemp;		//ÁÙÊ±±£´æÖĞ¼ä½á¹û
+	float * t_pTemp;		//ä¸´æ—¶ä¿å­˜ä¸­é—´ç»“æœ
 	t_pTemp = new float[m_nCellNumb];
-
 	for ( k = 0; k < m_nANG; ++k )
 	{
 		for ( j = 0; j < m_nBIN; ++j )
 		{
-
 			for ( i = 1; i < m_nCellNumb - 1; ++i )
 			{
 				t_pTemp[i] = m_pCellFeatures[k * t_nLineWidth + j * m_nBIN + i] * 0.5f 
 					+ m_pCellFeatures[k * t_nLineWidth + j * m_nBIN + i + 1] * 0.25f 
 					+ m_pCellFeatures[k * t_nLineWidth + j * m_nBIN + i - 1] * 0.25f;
 			}
-
 			for ( i = 1; i < m_nCellNumb - 1; ++i )
 			{
 				m_pCellFeatures[i * t_nLineWidth + k * m_nBIN + j] = t_pTemp[i];
 			}
 		}
 	}
-
 	delete [] t_pTemp;
 }//DSmoothCell
-
-
 /*****************************************************************
 Name:			Countm_nBIN
 Inputs:
 	none.
 Return Value:
 	none.
-Description:	¼ÆËãm_nBIN
+Description:	è®¡ç®—m_nBIN
 *****************************************************************/
 void RHOG::Countm_nBIN( void )
 {
-	int t_nLineWidthBlob;		//Ã¿¸ö·½ÏòµÄ¿í¶È
+	int t_nLineWidthBlob;		//æ¯ä¸ªæ–¹å‘çš„å®½åº¦
 	t_nLineWidthBlob = m_nBlobNumb * m_nCellPerBlob * m_nBIN;//4*3*10
 	int t_nBlobWidth;
 	t_nBlobWidth = m_nCellPerBlob * m_nBIN;//3*10
-
-	int t_nLineWidthCell;		//cellÃ¿¸ö·½ÏòµÄ¿í¶È
+	int t_nLineWidthCell;		//cellæ¯ä¸ªæ–¹å‘çš„å®½åº¦
 	t_nLineWidthCell = m_nCellNumb * m_nBIN;//7*10
-
 	int i, j, k;
-
 	for ( k = 0; k < m_nANG; ++k )
 	{
 		for ( j = 0; j < m_nBlobNumb; ++j )
@@ -2005,124 +1668,107 @@ void RHOG::Countm_nBIN( void )
 		}
 	}
 }//Countm_nBIN
-
-
 /*****************************************************************
 Name:			Normalm_nBIN
 Inputs:
 	none.
 Return Value:
 	none.
-Description:	¹éÒ»»¯m_nBIN
+Description:	å½’ä¸€åŒ–m_nBIN
 *****************************************************************/
 void RHOG::Normalm_nBIN( void )
 {
 	int i, j;
-	int t_nDataSize;		//ÌØÕ÷ÏòÁ¿³¤¶È£¨m_nBIN£©
+	int t_nDataSize;		//ç‰¹å¾å‘é‡é•¿åº¦ï¼ˆm_nBINï¼‰
 	t_nDataSize = m_nCellPerBlob * m_nBIN;//30
-
-	int t_nm_nBlobNumber;		//blobµÄÊıÁ¿
+	int t_nm_nBlobNumber;		//blobçš„æ•°é‡
 	t_nm_nBlobNumber = m_nANG * m_nBlobNumb;//18*4=72
-
 	for ( j = 0; j < t_nm_nBlobNumber; ++j )
 	{
-		//Í³¼ÆL2-normal·ÖÄ¸
-		float * t_fPos;		//Êı¾İ·ÃÎÊÖ¸Õë
+		//ç»Ÿè®¡L2-normalåˆ†æ¯
+		float * t_fPos;		//æ•°æ®è®¿é—®æŒ‡é’ˆ
 		t_fPos = &m_pfFeature[j * t_nDataSize];
-
 		float t_fAddUp;
 		t_fAddUp = 0;
 		for ( i = 0; i < t_nDataSize; ++i )
 		{
-			//if ( t_fAddUp < t_fPos[i] )	//¿ÉÌæ»»Ïî£¬×î´óÖµ¹éÒ»»¯
+			//if ( t_fAddUp < t_fPos[i] )	//å¯æ›¿æ¢é¡¹ï¼Œæœ€å¤§å€¼å½’ä¸€åŒ–
 			//{
 			//	t_fAddUp = t_fPos[i];
 			//}
 			t_fAddUp += t_fPos[i] * t_fPos[i];
 		}
-
 		t_fAddUp = sqrt( t_fAddUp + 1.0f );
-		//t_fAddUp += 0.1f;		//¿ÉÌæ»»Ïî£¬×î´óÖµ¹éÒ»»¯
-
+		//t_fAddUp += 0.1f;		//å¯æ›¿æ¢é¡¹ï¼Œæœ€å¤§å€¼å½’ä¸€åŒ–
 		for ( i = 0; i < t_nDataSize; ++i )
 		{
 			t_fPos[i] = t_fPos[i] / t_fAddUp;
 		}
 	}
 }//Normalm_nBIN
-
-
 /*****************************************************************
 Name:			CountSym
 Inputs:
 	none.
 Return Value:
 	none.
-Description:	¼ÆËã¶Ô³ÆĞÔÌØÕ÷
+Description:	è®¡ç®—å¯¹ç§°æ€§ç‰¹å¾
 *****************************************************************/
 void RHOG::CountSym( void )
 {
-	float * t_pPos;		//Ö¸Ïò¶Ô³ÆÌØÕ÷ÆğÊ¼µã
+	float * t_pPos;		//æŒ‡å‘å¯¹ç§°ç‰¹å¾èµ·å§‹ç‚¹
 	t_pPos = &m_pfFeature[ m_nANG * m_nBlobNumb * m_nCellPerBlob * m_nBIN ];
-
 	int i,j,k;
 	for ( i = 0; i < m_nANG / 2; ++i )
 	{
 		for ( j = 0; j < m_nCellNumb; ++j )
 		{
-			float t_fSum;		//¼ÇÂ¼ÀÛ¼Ó
+			float t_fSum;		//è®°å½•ç´¯åŠ 
 			t_fSum = 0;
-
-			float t_fAddUpA;	//¼ÆËã¾ùÖµ
+			float t_fAddUpA;	//è®¡ç®—å‡å€¼
 			float t_fAddUpB;
 			t_fAddUpA = 0;
 			t_fAddUpB = 0;
-
 			for ( k = 0; k < m_nBIN; ++k )
 			{
 				float t_fA;
 				float t_fB;
-
 				t_fA = m_pCellFeatures[ i * m_nCellNumb * m_nBIN + j * m_nBIN + k ];
 				t_fB = m_pCellFeatures[ ( m_nANG - i - 1 ) * m_nCellNumb * m_nBIN + j * m_nBIN + ( m_nBIN - k ) ];
 				t_fSum += t_fA * t_fB;
 				t_fAddUpA += t_fA;
 				t_fAddUpB += t_fB;
 			}
-
 			t_fSum = t_fSum / ( t_fAddUpA * t_fAddUpB + 1 );
-
 			*t_pPos = t_fSum;
 			++t_pPos;
 		}
 	}
 }//CountSym
-
-
 /*****************************************************************
 Name:			RefineTargetSeq
 Inputs:
-	vector <CvRect> t_vTarget - ÊäÈëµÄÄ¿±ê¶ÓÁĞ
-	iRect *& t_pRect - ·µ»ØµÄÄ¿±ê¶ÓÁĞ
-	int t_nMatchTime  - Í³¼ÆÄ¿±êÊ±ÖØµşµÄ´ÎÊı
+	vector <CvRect> t_vTarget - è¾“å…¥çš„ç›®æ ‡é˜Ÿåˆ—
+	iRect *& t_pRect - è¿”å›çš„ç›®æ ‡é˜Ÿåˆ—
+	int t_nMatchTime  - ç»Ÿè®¡ç›®æ ‡æ—¶é‡å çš„æ¬¡æ•°
 Return Value:
-	int - >0 Ä¿±êÊıÁ¿
-		  <0 ¶ÔÓ¦´íÎó´úÂë
-Description:	ÖØĞÂ¹é²¢Ä¿±ê¶ÓÁĞ£¬²ÉÓÃ¾ÛÀà·¨
+	int - >0 ç›®æ ‡æ•°é‡
+		  <0 å¯¹åº”é”™è¯¯ä»£ç 
+Description:	é‡æ–°å½’å¹¶ç›®æ ‡é˜Ÿåˆ—ï¼Œé‡‡ç”¨èšç±»æ³•
 *****************************************************************/
 int RHOG::RefineTargetSeq( vector <CvRect> t_vTarget, iRect *& t_pRect, int t_nMatchTime )	
 {
 	int t_nRectNum;	
 	t_nRectNum = (int)t_vTarget.size();
 	clock_t start,stop;
-	_LARGE_INTEGER time_start,s1,s2,s3;  //¿ªÊ¼Ê±¼ä  
-	_LARGE_INTEGER time_over,e1,e2,e3;   //½áÊøÊ±¼ä  
-	double dqFreq;      //¼ÆÊ±Æ÷ÆµÂÊ  
-	LARGE_INTEGER f;    //¼ÆÊ±Æ÷ÆµÂÊ  
+	_LARGE_INTEGER time_start,s1,s2,s3;  //å¼€å§‹æ—¶é—´  
+	_LARGE_INTEGER time_over,e1,e2,e3;   //ç»“æŸæ—¶é—´  
+	double dqFreq;      //è®¡æ—¶å™¨é¢‘ç‡  
+	LARGE_INTEGER f;    //è®¡æ—¶å™¨é¢‘ç‡  
 	QueryPerformanceFrequency(&f);  
 	dqFreq=(double)f.QuadPart;  
 	QueryPerformanceCounter(&time_start);
-	//¾ÛÀàÇøÓò
+	//èšç±»åŒºåŸŸ
 	vector <TargetArea> t_vAreaSeq;
 	int i, j;
 	start=clock();
@@ -2132,10 +1778,8 @@ int RHOG::RefineTargetSeq( vector <CvRect> t_vTarget, iRect *& t_pRect, int t_nM
 		int t_nCenterY;
 		t_nCenterX = t_vTarget[i].x;	// + t_vTarget[i].width / 2;
 		t_nCenterY = t_vTarget[i].y;	// + t_vTarget[i].height / 2;
-
-		bool t_bFinded;		//ÊÇ·ñÕÒµ½Æ¥ÅäÄ¿±ê
+		bool t_bFinded;		//æ˜¯å¦æ‰¾åˆ°åŒ¹é…ç›®æ ‡
 		t_bFinded = false;
-
 		for( j = 0; j < (int)t_vAreaSeq.size(); ++j )
 		{
 			if ( abs( t_nCenterX - t_vAreaSeq[j].m_nCenterX ) < t_vTarget[i].width / 3
@@ -2147,13 +1791,10 @@ int RHOG::RefineTargetSeq( vector <CvRect> t_vTarget, iRect *& t_pRect, int t_nM
 				t_vAreaSeq[j].m_nWidth = ( t_vAreaSeq[j].m_nWidth * t_vAreaSeq[j].m_nDupeNumber + t_vTarget[i].width ) / ( t_vAreaSeq[j].m_nDupeNumber + 1 );
 				t_vAreaSeq[j].m_nHeight = ( t_vAreaSeq[j].m_nHeight * t_vAreaSeq[j].m_nDupeNumber + t_vTarget[i].height ) / ( t_vAreaSeq[j].m_nDupeNumber + 1 );
 				t_vAreaSeq[j].m_nDupeNumber ++;
-
 				t_bFinded = true;
-
 				break;
 			}
 		}
-
 		if ( !t_bFinded )
 		{
 			TargetArea t_TarAdd;
@@ -2162,13 +1803,10 @@ int RHOG::RefineTargetSeq( vector <CvRect> t_vTarget, iRect *& t_pRect, int t_nM
 			t_TarAdd.m_nWidth = t_vTarget[i].width;
 			t_TarAdd.m_nHeight = t_vTarget[i].height;
 			t_TarAdd.m_nDupeNumber = 1;
-
 			t_vAreaSeq.push_back( t_TarAdd );
 		}
 	}
-
-
-	//É¾³ı¹ÂÁ¢ÇøÓò
+	//åˆ é™¤å­¤ç«‹åŒºåŸŸ
 	int t_nTarNUmber;
 	t_nTarNUmber = (int)t_vAreaSeq.size();
 	for ( i = 0; i < (int)t_vAreaSeq.size(); ++i )
@@ -2178,23 +1816,19 @@ int RHOG::RefineTargetSeq( vector <CvRect> t_vTarget, iRect *& t_pRect, int t_nM
 			t_vAreaSeq[i].m_nDupeNumber += 1;
 		}
 	}
-
-
-	//ºÏ²¢ÇøÓò
+	//åˆå¹¶åŒºåŸŸ
 	for ( i = 0; i < (int)t_vAreaSeq.size(); ++i )
 	{
 		if ( t_vAreaSeq[i].m_nDupeNumber <= 0 )
 		{
 			continue;
 		}
-
 		for ( j = i + 1; j < (int)t_vAreaSeq.size(); ++j )
 		{
 			if ( t_vAreaSeq[j].m_nDupeNumber <= 0 )
 			{
 				continue;
 			}
-
 			if ( abs( t_vAreaSeq[i].m_nCenterX - t_vAreaSeq[j].m_nCenterX ) < ( t_vAreaSeq[i].m_nWidth + t_vAreaSeq[j].m_nWidth ) / 3
 				&& abs( t_vAreaSeq[i].m_nCenterY - t_vAreaSeq[j].m_nCenterY ) < ( t_vAreaSeq[i].m_nWidth + t_vAreaSeq[j].m_nWidth ) / 3 )
 			{
@@ -2203,16 +1837,12 @@ int RHOG::RefineTargetSeq( vector <CvRect> t_vTarget, iRect *& t_pRect, int t_nM
 				t_vAreaSeq[i].m_nWidth = ( t_vAreaSeq[i].m_nWidth * t_vAreaSeq[i].m_nDupeNumber + t_vAreaSeq[j].m_nWidth * t_vAreaSeq[j].m_nDupeNumber ) / ( t_vAreaSeq[i].m_nDupeNumber + t_vAreaSeq[j].m_nDupeNumber );
 				t_vAreaSeq[i].m_nHeight = ( t_vAreaSeq[i].m_nHeight * t_vAreaSeq[i].m_nDupeNumber + t_vAreaSeq[j].m_nHeight * t_vAreaSeq[j].m_nDupeNumber ) / ( t_vAreaSeq[i].m_nDupeNumber + t_vAreaSeq[j].m_nDupeNumber );
 				t_vAreaSeq[i].m_nDupeNumber = t_vAreaSeq[i].m_nDupeNumber + t_vAreaSeq[j].m_nDupeNumber;
-
 				t_vAreaSeq[j].m_nDupeNumber = -1;
-
 				t_nTarNUmber--;
 			}
 		}
 	}
-
-
-	//É¾³ı½ÏµÍ¸ÅÂÊÇøÓò
+	//åˆ é™¤è¾ƒä½æ¦‚ç‡åŒºåŸŸ
 	for ( i = 0; i < (int)t_vAreaSeq.size(); ++i )
 	{
 		if ( t_vAreaSeq[i].m_nDupeNumber < t_nMatchTime && t_vAreaSeq[i].m_nDupeNumber > 0 )
@@ -2221,16 +1851,12 @@ int RHOG::RefineTargetSeq( vector <CvRect> t_vTarget, iRect *& t_pRect, int t_nM
 			t_nTarNUmber--;
 		}
 	}
-
-
-	//±£ÁôÊı¾İ
-	if ( t_nTarNUmber <= 0 )		//Èç¹ûÃ»ÓĞÄ¿±ê£¬Ö±½Ó·µ»ØNULL
+	//ä¿ç•™æ•°æ®
+	if ( t_nTarNUmber <= 0 )		//å¦‚æœæ²¡æœ‰ç›®æ ‡ï¼Œç›´æ¥è¿”å›NULL
 	{
 		return 0;
 	}
-
 	t_pRect = new iRect[t_nTarNUmber];
-
 	j = 0;
 	for ( i = 0; i < (int)t_vAreaSeq.size(); ++i )
 	{
@@ -2240,102 +1866,83 @@ int RHOG::RefineTargetSeq( vector <CvRect> t_vTarget, iRect *& t_pRect, int t_nM
 			t_pRect[j].y = t_vAreaSeq[i].m_nCenterY - t_vAreaSeq[i].m_nHeight;
 			t_pRect[j].m_nWidth = t_vAreaSeq[i].m_nWidth * 2 - 2;
 			t_pRect[j].m_nHeight = t_vAreaSeq[i].m_nHeight * 2 - 2;
-
 			j++;
 		}
 	}
 		CString out;
-	 QueryPerformanceCounter(&time_over);    //¼ÆÊ±½áÊø  
+	 QueryPerformanceCounter(&time_over);    //è®¡æ—¶ç»“æŸ  
 	float  time_elapsed=1000000*(time_over.QuadPart-time_start.QuadPart)/dqFreq;  
-	//³ËÒÔ1000000°Ñµ¥Î»ÓÉÃë»¯ÎªÎ¢Ãë£¬¾«¶ÈÎª1000 000/£¨cpuÖ÷Æµ£©Î¢Ãë  
+	//ä¹˜ä»¥1000000æŠŠå•ä½ç”±ç§’åŒ–ä¸ºå¾®ç§’ï¼Œç²¾åº¦ä¸º1000 000/ï¼ˆcpuä¸»é¢‘ï¼‰å¾®ç§’  
    
 	out.Format("RefineTarget:  %lf us",time_elapsed);
 			//AfxMessageBox(out);
 	return t_nTarNUmber;
 }//RefineTargetSeq
-
-
 /*****************************************************************
 Name:			GetImageList
 Inputs:
-	string t_sPath - ·µ»ØµÄÂ·¾¶
-	vector <string> t_vFileName - ÎÄ¼şÃû¶ÓÁĞ
+	string t_sPath - è¿”å›çš„è·¯å¾„
+	vector <string> t_vFileName - æ–‡ä»¶åé˜Ÿåˆ—
 Return Value:
-	int - Í¼ÏñÊıÁ¿.
-Description:	»ñÈ¡Ô­Ê¼Í¼ÏñÁĞ±í
+	int - å›¾åƒæ•°é‡.
+Description:	è·å–åŸå§‹å›¾åƒåˆ—è¡¨
 *****************************************************************/
 int RHOG::GetImageList( string t_sPath, vector <string> &t_vFileName )
 {
-	//Çå¿Õ¶ÓÁĞ
+	//æ¸…ç©ºé˜Ÿåˆ—
 	t_vFileName.clear();
 	int t_nEnd = 0;
-
-
-	//»ñÈ¡¸ÃÂ·¾¶ÏÂµÄËùÓĞÎÄ¼ş  
+	//è·å–è¯¥è·¯å¾„ä¸‹çš„æ‰€æœ‰æ–‡ä»¶  
 	_finddata_t file;
 long	long lf;
-
 	string t_sTempPath = t_sPath + "*";
-
-	//ÊäÈëÎÄ¼ş¼ĞÂ·¾¶
+	//è¾“å…¥æ–‡ä»¶å¤¹è·¯å¾„
 	locale loc = locale::global(locale(""));
-
 	lf = (long long )_findfirst( t_sTempPath.c_str(), &file );
-
 	if ( lf == -1 ) 
 	{
-		locale::global(locale("C"));//»¹Ô­È«¾ÖÇøÓòÉè¶¨
-
+		locale::global(locale("C"));//è¿˜åŸå…¨å±€åŒºåŸŸè®¾å®š
 		return 0;
 	} 
 	else  
 	{
 		while( _findnext( lf, &file ) == 0 ) 
 		{
-			//Êä³öÎÄ¼şÃû
+			//è¾“å‡ºæ–‡ä»¶å
 			//cout<<file.name<<endl;
 			if ( strcmp( file.name, "." ) == 0 || strcmp( file.name, ".." ) == 0 )
 			{
 				continue;
 			}
-
-
 			string m_strFileExt = strrchr( file.name, '.' );
-
 			if ( m_strFileExt == ".jpg" || m_strFileExt == ".JPG" || m_strFileExt == ".Jpg"
-				|| m_strFileExt == ".bmp" || m_strFileExt == ".BMP" || m_strFileExt == ".PNG"|| m_strFileExt == ".png")		//Ö»´¦Àíjpg¸ñÊ½ÎÄ¼ş£¬ÈçĞè´¦ÀíÆäËû¸ñÊ½£¬ÔÚÕâÀïÌí¼Ó
+				|| m_strFileExt == ".bmp" || m_strFileExt == ".BMP" || m_strFileExt == ".PNG"|| m_strFileExt == ".png")		//åªå¤„ç†jpgæ ¼å¼æ–‡ä»¶ï¼Œå¦‚éœ€å¤„ç†å…¶ä»–æ ¼å¼ï¼Œåœ¨è¿™é‡Œæ·»åŠ 
 			{
-				m_strFileExt = t_sPath + file.name;	//Éú³ÉÍêÕûÂ·¾¶+ÎÄ¼şÃû
-
-				t_vFileName.push_back( m_strFileExt );	//Ìí¼ÓÎÄ¼ş
+				m_strFileExt = t_sPath + file.name;	//ç”Ÿæˆå®Œæ•´è·¯å¾„+æ–‡ä»¶å
+				t_vFileName.push_back( m_strFileExt );	//æ·»åŠ æ–‡ä»¶
 				t_nEnd++;
 			}
 		}
 	}
 	_findclose(lf);
-
-	locale::global(locale("C"));//»¹Ô­È«¾ÖÇøÓòÉè¶¨
-
+	locale::global(locale("C"));//è¿˜åŸå…¨å±€åŒºåŸŸè®¾å®š
 	return t_nEnd;
 }//GetImageList
-
-
 /*****************************************************************
 Name:			cvtList2Mat
 Inputs:
-	ListImage *SrcImg - ÊäÈëÍ¼Ïñ
-	Mat & t_Image - Êä³öÍ¼Ïñ
+	ListImage *SrcImg - è¾“å…¥å›¾åƒ
+	Mat & t_Image - è¾“å‡ºå›¾åƒ
 Return Value:
-	int 1 - Õı³£·µ»Ø
-		<0 ¶ÔÓ¦´íÎó´úÂë 
-Description:	½«listimageÍ¼Ïñ×ªÎªiplÍ¼Ïñ
+	int 1 - æ­£å¸¸è¿”å›
+		<0 å¯¹åº”é”™è¯¯ä»£ç  
+Description:	å°†listimageå›¾åƒè½¬ä¸ºiplå›¾åƒ
 *****************************************************************/
 int RHOG::cvtList2Mat( ListImage *SrcImg, Mat & t_Image )
 {
 	if ( SrcImg->GetImgChannel() == 1 )
 	{
 		t_Image.create( SrcImg->GetImgHeight(), SrcImg->GetImgWidth(), CV_8UC1 );
-
 		int i, j;
 		UCHAR * t_pSrc;
 		UCHAR * t_pDst;
@@ -2355,12 +1962,10 @@ int RHOG::cvtList2Mat( ListImage *SrcImg, Mat & t_Image )
 	else if ( SrcImg->GetImgChannel() == 3 )
 	{
 		t_Image.create( SrcImg->GetImgHeight(), SrcImg->GetImgWidth(), CV_8UC3 );
-
 		int a = t_Image.cols;
 		int b = t_Image.rows;
 		int c = t_Image.channels();
 		CvSize d = t_Image.size();
-
 		int e = SrcImg->GetImgDataSize();
 	
 		int i, j;
@@ -2392,7 +1997,6 @@ int RHOG::cvtList2Mat( ListImage *SrcImg, Mat & t_Image )
 		int i, j;
 		UCHAR * t_pSrc;
 		UCHAR * t_pDst;
-
 		for ( j = 0; j < t_Image.rows; ++j )
 		{
 			t_pSrc = SrcImg->GetImgBuffer();

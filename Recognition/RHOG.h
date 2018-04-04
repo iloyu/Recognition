@@ -41,9 +41,10 @@ using cv::Mat;
 
 using namespace std;
 
-extern "C" void MedianFilter(unsigned char * src,unsigned char *dst,int  width,int height);
-extern "C" void countFeatures(uchar *in,float *out,int *d_ANG,int *d_Mag,float *c_ANG,float *c_Mag,uchar *p_ANG,uchar *p_Mag,int Imagewidth,int ImageHeight);
-extern "C" void countFeaturesfloat(float *in,float *out,int *d_ANG,int *d_Mag,float *c_ANG,float *c_Mag,float *p_ANG,float *p_Mag,int Imagewidth,int ImageHeight);
+//extern "C" void MedianFilter(unsigned char * src,unsigned char *dst,int  width,int height);
+//extern "C" void countFeatures(uchar *in,float *out,int *d_ANG,int *d_Mag,float *c_ANG,float *c_Mag,uchar *p_ANG,uchar *p_Mag,int Imagewidth,int ImageHeight);
+extern "C" void countFeaturesfloat(float *out,float *c_ANG,float *c_Mag,float *p_ANG,float *p_Mag,int Imagewidth,int ImageHeight,int *mask,int *histo_mask,int off_x,int off_y);
+
 /*****************************************************************
 Defines   
 *****************************************************************/
@@ -372,6 +373,8 @@ private:
 	float * m_fMagMat;		//用于预先计算模板中每一点到中点的距离
 	int * m_nANGle;			//用于确定所属角度
 	int * m_nMag;           //用于确定扇区编号
+	int * mask;              //用于判断是否在圆内
+	int * histo_mask;         //用于确定bin值
 
 	int m_nFilterSize;		//图像预处理中值滤波器模板大小
 
